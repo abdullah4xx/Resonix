@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">رزونكس</string>
+
+    <string name="nav_library">المكتبة</string>
+    <string name="nav_browser">المتصفح</string>
+    <string name="nav_themes">الثيمات</string>
+
+    <string name="quick_favorites">المفضلة</string>
+    <string name="quick_recent">الأحدث</string>
+    <string name="quick_videos">الفيديوهات</string>
+
+    <string name="tab_tracks">المقاطع</string>
+    <string name="tab_albums">الألبومات</string>
+    <string name="tab_playlists">قوائم التشغيل</string>
+    <string name="tab_folders">المجلدات</string>
+
+    <string name="shuffle_all">تشغيل عشوائي للكل</string>
+    <string name="items_count">%d عنصر</string>
+    <string name="tracks_count">%d مقطع</string>
+    <string name="empty_library">لم يتم العثور على ملفات بعد. امنح التطبيق صلاحية الوصول، أو أضف ملفات صوتية لجهازك، أو نزّل ملفات من تبويب المتصفح.</string>
+
+    <string name="playlist_quran">القرآن الكريم</string>
+    <string name="playlist_music">الموسيقى</string>
+    <string name="playlist_recent">شُغّل مؤخرًا</string>
+
+    <string name="cd_favorite">مفضلة</string>
+    <string name="cd_close">إغلاق</string>
+    <string name="cd_play_pause">تشغيل / إيقاف</string>
+    <string name="cd_next">التالي</string>
+    <string name="cd_previous">السابق</string>
+
+    <string name="player_now_playing">يتم التشغيل الآن</string>
+    <string name="quran_protection_active">حماية القرآن مفعّلة</string>
+    <string name="sleep_timer">مؤقّت النوم</string>
+    <string name="sleep_timer_desc_track">خفض الصوت تدريجيًا والإيقاف عند انتهاء هذا المقطع</string>
+    <string name="sleep_timer_desc_surah">خفض الصوت تدريجيًا والإيقاف عند انتهاء هذه السورة</string>
+    <string name="mark_quran">هذا الملف قرآن</string>
+    <string name="mark_quran_desc">تفعيل الحماية الكاملة (بدون مؤثرات)</string>
+    <string name="effects_title">المؤثرات الصوتية</string>
+    <string name="speed_fmt">السرعة %1$s×</string>
+    <string name="pitch_fmt">درجة الصوت %1$s×</string>
+    <string name="equalizer">المعادل الصوتي</string>
+    <string name="eq_off">إيقاف</string>
+    <string name="ambient_noise">ضوضاء محيطة</string>
+    <string name="quran_notice">هذه تلاوة قرآنية، وحفاظًا عليها عُطّلت جميع المؤثرات الصوتية.</string>
+
+    <string name="browser_address">العنوان أو البحث</string>
+    <string name="dl_downloading_fmt">جارٍ تنزيل %1$s (%2$d%%)</string>
+    <string name="dl_saved_fmt">تم الحفظ: %1$s</string>
+    <string name="dl_failed_fmt">فشل: %1$s - %2$s</string>
+    <string name="dl_button">تنزيل</string>
+    <string name="dl_dialog_title">تنزيل ملف صوتي</string>
+    <string name="dl_url_label">رابط الملف الصوتي المباشر</string>
+    <string name="dl_name_label">اسم الملف</string>
+    <string name="dl_cat_music">موسيقى</string>
+    <string name="dl_cat_quran">قرآن</string>
+    <string name="dl_warning">نزّل فقط الملفات التي تملكها أو لديك إذن بحفظها. روابط منصات البث غير مدعومة.</string>
+    <string name="dl_default_name">تنزيل</string>
+    <string name="cancel">إلغاء</string>
+
+    <string name="theme_title">الثيمات</string>
+    <string name="theme_presets">القوالب الجاهزة</string>
+    <string name="preset_default">رزونكس</string>
+    <string name="preset_oled">OLED أسود نقي</string>
+    <string name="preset_glass">زجاجي</string>
+    <string name="preset_custom">مخصّص</string>
+    <string name="theme_builder">منشئ الثيم المخصّص</string>
+    <string name="primary_color">اللون الأساسي</string>
+    <string name="secondary_color">اللون الثانوي</string>
+    <string name="hue">الصبغة</string>
+    <string name="saturation">التشبّع</string>
+    <string name="brightness">السطوع</string>
+    <string name="theme_preview">معاينة حيّة لألوانك</string>
+    <string name="crafted_by">رزونكس · تطوير %1$s</string>
+
+    <string name="unknown_artist">فنان غير معروف</string>
+    <string name="unknown_album">ألبوم غير معروف</string>
+    <string name="unknown_folder">غير معروف</string>
+    <string name="video_label">فيديو</string>
+    <string name="videos_album">الفيديوهات</string>
+    <string name="downloads_album">التنزيلات</string>
+    <string name="quran_album">القرآن الكريم</string>
+
+    <string name="notif_channel">التنزيلات</string>
+    <string name="notif_title">تنزيلات رزونكس</string>
+    <string name="notif_starting">جارٍ بدء التنزيل…</string>
+    <string name="err_http">الخادم أعاد الخطأ HTTP %1$d</string>
+    <string name="err_not_audio">هذا الرابط صفحة ويب وليس ملفًا صوتيًا</string>
+    <string name="err_generic">فشل التنزيل</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_english">English</string>
+    <string name="lang_title">اللغة</string>
+    <string name="shuffle">تشغيل عشوائي</string>
+    <string name="quick_quran">القرآن</string>
+    <string name="tab_artists">الفنانين</string>
+    <string name="nav_search">بحث</string>
+    <string name="search_hint">ابحث في مكتبتك</string>
+    <string name="search_empty">لا توجد نتائج</string>
+    <string name="sort_newest">الأحدث إضافة</string>
+    <string name="sort_title">العنوان</string>
+    <string name="sort_artist">الفنان</string>
+    <string name="cd_sort">ترتيب</string>
+    <string name="cd_more">المزيد</string>
+    <string name="menu_add_fav">إضافة للمفضلة</string>
+    <string name="menu_remove_fav">إزالة من المفضلة</string>
+    <string name="menu_mark_quran">تحديد كقرآن</string>
+    <string name="menu_unmark_quran">إلغاء تحديده كقرآن</string>
+</resources>

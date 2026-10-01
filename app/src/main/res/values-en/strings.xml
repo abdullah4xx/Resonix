@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">Resonix</string>
+
+    <string name="nav_library">Library</string>
+    <string name="nav_browser">Browser</string>
+    <string name="nav_themes">Themes</string>
+
+    <string name="quick_favorites">Favorites</string>
+    <string name="quick_recent">Recent</string>
+    <string name="quick_videos">Videos</string>
+
+    <string name="tab_tracks">Tracks</string>
+    <string name="tab_albums">Albums</string>
+    <string name="tab_playlists">Playlists</string>
+    <string name="tab_folders">Folders</string>
+
+    <string name="shuffle_all">Shuffle All</string>
+    <string name="items_count">%d items</string>
+    <string name="tracks_count">%d tracks</string>
+    <string name="empty_library">No media found yet. Grant access, add audio files to your device, or download files from the Browser tab.</string>
+
+    <string name="playlist_quran">Quran</string>
+    <string name="playlist_music">Music</string>
+    <string name="playlist_recent">Recently played</string>
+
+    <string name="cd_favorite">Favorite</string>
+    <string name="cd_close">Close</string>
+    <string name="cd_play_pause">Play / Pause</string>
+    <string name="cd_next">Next</string>
+    <string name="cd_previous">Previous</string>
+
+    <string name="player_now_playing">Now Playing</string>
+    <string name="quran_protection_active">Quran protection active</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="sleep_timer_desc_track">Fade out and stop when this track ends</string>
+    <string name="sleep_timer_desc_surah">Fade out and stop when this Surah ends</string>
+    <string name="mark_quran">This is Quran audio</string>
+    <string name="mark_quran_desc">Turns on full protection (no effects)</string>
+    <string name="effects_title">Sound effects</string>
+    <string name="speed_fmt">Speed %1$s×</string>
+    <string name="pitch_fmt">Pitch %1$s×</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="eq_off">Off</string>
+    <string name="ambient_noise">Ambient noise</string>
+    <string name="quran_notice">This is Quran recitation, so all sound effects are turned off to preserve it exactly as recited.</string>
+
+    <string name="browser_address">Address or search</string>
+    <string name="dl_downloading_fmt">Downloading %1$s (%2$d%%)</string>
+    <string name="dl_saved_fmt">Saved: %1$s</string>
+    <string name="dl_failed_fmt">Failed: %1$s - %2$s</string>
+    <string name="dl_button">Download</string>
+    <string name="dl_dialog_title">Download audio file</string>
+    <string name="dl_url_label">Direct audio URL</string>
+    <string name="dl_name_label">File name</string>
+    <string name="dl_cat_music">Music</string>
+    <string name="dl_cat_quran">Quran</string>
+    <string name="dl_warning">Only download files you own or have permission to save. Streaming-service links are not supported.</string>
+    <string name="dl_default_name">Download</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="theme_title">Themes</string>
+    <string name="theme_presets">Presets</string>
+    <string name="preset_default">Resonix</string>
+    <string name="preset_oled">OLED Pure Black</string>
+    <string name="preset_glass">Glassmorphism</string>
+    <string name="preset_custom">Custom</string>
+    <string name="theme_builder">Custom Theme Builder</string>
+    <string name="primary_color">Primary color</string>
+    <string name="secondary_color">Secondary color</string>
+    <string name="hue">Hue</string>
+    <string name="saturation">Saturation</string>
+    <string name="brightness">Brightness</string>
+    <string name="theme_preview">Live preview of your colors</string>
+    <string name="crafted_by">Resonix · crafted by %1$s</string>
+
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_album">Unknown album</string>
+    <string name="unknown_folder">Unknown</string>
+    <string name="video_label">Video</string>
+    <string name="videos_album">Videos</string>
+    <string name="downloads_album">Downloads</string>
+    <string name="quran_album">Quran</string>
+
+    <string name="notif_channel">Downloads</string>
+    <string name="notif_title">Resonix downloads</string>
+    <string name="notif_starting">Starting download…</string>
+    <string name="err_http">Server returned HTTP %1$d</string>
+    <string name="err_not_audio">This link is a web page, not an audio file</string>
+    <string name="err_generic">Download failed</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_english">English</string>
+    <string name="lang_title">Language</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="quick_quran">Quran</string>
+    <string name="tab_artists">Artists</string>
+    <string name="nav_search">Search</string>
+    <string name="search_hint">Search your library</string>
+    <string name="search_empty">No results</string>
+    <string name="sort_newest">Recently added</string>
+    <string name="sort_title">Title</string>
+    <string name="sort_artist">Artist</string>
+    <string name="cd_sort">Sort</string>
+    <string name="cd_more">More options</string>
+    <string name="menu_add_fav">Add to favorites</string>
+    <string name="menu_remove_fav">Remove from favorites</string>
+    <string name="menu_mark_quran">Mark as Quran</string>
+    <string name="menu_unmark_quran">Not Quran</string>
+</resources>
