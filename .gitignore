@@ -11,5 +11,6 @@
 *.apk
 *.aab
 *.jks
+!/app/debug.keystore
 *.keystore
 ui theme/
