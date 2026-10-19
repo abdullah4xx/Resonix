@@ -13,8 +13,19 @@ android {
         applicationId = "com.resonix.app"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
         versionName = "1.0.0"
+    }
+
+    signingConfigs {
+        create("debug") {
+            if (file("debug.keystore").exists()) {
+                storeFile = file("debug.keystore")
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
     }
 
     buildTypes {
@@ -23,7 +34,11 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        debug {
+            signingConfig signingConfigs.getByName("debug")
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
