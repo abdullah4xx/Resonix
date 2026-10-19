@@ -17,17 +17,6 @@ android {
         versionName = "1.0.0"
     }
 
-    signingConfigs {
-        create("debug") {
-            if (file("debug.keystore").exists()) {
-                storeFile = file("debug.keystore")
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
-            }
-        }
-    }
-
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -35,7 +24,14 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
+            if (file("debug.keystore").exists()) {
+                signingConfig {
+                    storeFile = file("debug.keystore")
+                    storePassword = "android"
+                    keyAlias = "androiddebugkey"
+                    keyPassword = "android"
+                }
+            }
         }
     }
 
