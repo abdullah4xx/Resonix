@@ -17,7 +17,7 @@
     <string name="shuffle_all">تشغيل عشوائي للكل</string>
     <string name="items_count">%d عنصر</string>
     <string name="tracks_count">%d مقطع</string>
-    <string name="empty_library">لم يتم العثور على ملفات بعد. امنح التطبيق صلاحية الوصول، أو أضف ملفات صوتية لجهازك، أو نزّل ملفات من تبويب المتصفح.</string>
+    <string name="empty_library">لم يتم العثور على ملفات بعد. امنح التطبيق صلاحية الوصول وأضف ملفات صوتية إلى جهازك.</string>
 
     <string name="playlist_quran">القرآن الكريم</string>
     <string name="playlist_music">الموسيقى</string>
@@ -124,6 +124,8 @@
     <string name="quick_quran">القرآن</string>
     <string name="tab_artists">الفنانين</string>
     <string name="nav_search">بحث</string>
+    <string name="nav_settings">الإعدادات</string>
+    <string name="settings_title">الإعدادات</string>
     <string name="search_hint">ابحث في مكتبتك</string>
     <string name="search_empty">لا توجد نتائج</string>
     <string name="sort_newest">الأحدث إضافة</string>

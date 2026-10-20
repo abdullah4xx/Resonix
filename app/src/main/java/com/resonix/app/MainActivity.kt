@@ -22,7 +22,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Headset
-import androidx.compose.material.icons.filled.Explore
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.background
 import androidx.compose.animation.slideInVertically
@@ -41,6 +40,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
@@ -80,9 +80,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.resonix.app.ui.PlayerUiState
 import com.resonix.app.ui.PlayerViewModel
-import com.resonix.app.ui.browser.BrowserScreen
 import com.resonix.app.ui.home.HomeScreen
 import com.resonix.app.ui.player.PlayerScreen
+import com.resonix.app.ui.settings.SettingsScreen
 import com.resonix.app.ui.theme.ResonixTheme
 import com.resonix.app.ui.theme.LocalThemePreset
 import com.resonix.app.ui.theme.ThemeBuilderScreen
@@ -94,7 +94,7 @@ import com.resonix.app.ui.theme.themedBackground
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-private enum class Dest { BROWSER, LIBRARY, THEMES, SEARCH }
+private enum class Dest { LIBRARY, THEMES, SEARCH, SETTINGS }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -158,12 +158,6 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
                             unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         NavigationBarItem(
-                            dest == Dest.BROWSER, { dest = Dest.BROWSER },
-                            { Icon(Icons.Default.Explore, null) },
-                            label = { Text(stringResource(R.string.nav_browser)) },
-                            colors = navColors,
-                        )
-                        NavigationBarItem(
                             dest == Dest.LIBRARY, { dest = Dest.LIBRARY },
                             { Icon(Icons.Default.Headset, null) },
                             label = { Text(stringResource(R.string.nav_library)) },
@@ -181,6 +175,12 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
                             label = { Text(stringResource(R.string.nav_search)) },
                             colors = navColors,
                         )
+                        NavigationBarItem(
+                            dest == Dest.SETTINGS, { dest = Dest.SETTINGS },
+                            { Icon(Icons.Default.Settings, null) },
+                            label = { Text(stringResource(R.string.nav_settings)) },
+                            colors = navColors,
+                        )
                     }
                 }
             },
@@ -188,9 +188,9 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
             Box(Modifier.padding(pad).fillMaxSize()) {
                 when (dest) {
                     Dest.LIBRARY -> HomeScreen(vm, onOpenSearch = { dest = Dest.SEARCH })
-                    Dest.BROWSER -> BrowserScreen()
                     Dest.THEMES -> ThemeBuilderScreen(themeRepo, settings)
                     Dest.SEARCH -> SearchScreen(vm)
+                    Dest.SETTINGS -> SettingsScreen(themeRepo)
                 }
             }
         }
