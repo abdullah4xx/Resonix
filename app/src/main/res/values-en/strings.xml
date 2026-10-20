@@ -78,6 +78,13 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_picker_hint">Choose a preview of the app, then select light or dark.</string>
     <string name="theme_selected">Selected theme</string>
+    <string name="launcher_icon_title">App icon</string>
+    <string name="launcher_icon_hint">Choose a Resonix icon from the supplied designs.</string>
+    <string name="launcher_icon_1">Icon 1</string>
+    <string name="launcher_icon_2">Icon 2</string>
+    <string name="launcher_icon_3">Icon 3</string>
+    <string name="launcher_icon_4">Icon 4</string>
+    <string name="launcher_icon_5">Icon 5</string>
     <string name="theme_discover">Discover</string>
     <string name="theme_organic_description">A quiet editorial library with simple lists.</string>
     <string name="theme_outline_description">Bold outlined cards with crisp dark edges.</string>

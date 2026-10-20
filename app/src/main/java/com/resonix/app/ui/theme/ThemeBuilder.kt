@@ -1,7 +1,11 @@
 package com.resonix.app.ui.theme
 
 import android.content.Context
+import android.content.ComponentName
+import android.content.pm.PackageManager
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,6 +42,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +76,18 @@ enum class ThemePreset(@StringRes val labelRes: Int) {
     NEUMORPHIC_BLUE(R.string.preset_neumorphic),
 }
 
+enum class LauncherIconChoice(
+    val aliasName: String,
+    @DrawableRes val previewRes: Int,
+    @StringRes val labelRes: Int,
+) {
+    ICON_1("LauncherIcon1", R.drawable.launcher_icon_1, R.string.launcher_icon_1),
+    ICON_2("LauncherIcon2", R.drawable.launcher_icon_2, R.string.launcher_icon_2),
+    ICON_3("LauncherIcon3", R.drawable.launcher_icon_3, R.string.launcher_icon_3),
+    ICON_4("LauncherIcon4", R.drawable.launcher_icon_4, R.string.launcher_icon_4),
+    ICON_5("LauncherIcon5", R.drawable.launcher_icon_5, R.string.launcher_icon_5),
+}
+
 data class ThemeSettings(
     val preset: ThemePreset = ThemePreset.ORGANIC_LIGHT,
     val primary: Int = 0xFF4FD1C5.toInt(),
@@ -79,9 +97,14 @@ data class ThemeSettings(
 
 @Singleton
 class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
+    private val appContext = ctx.applicationContext
     private val prefs = ctx.getSharedPreferences("resonix_theme", Context.MODE_PRIVATE)
     private val _settings = MutableStateFlow(load())
     val settings: StateFlow<ThemeSettings> = _settings.asStateFlow()
+    private val _launcherIcon = MutableStateFlow(
+        LauncherIconChoice.values().getOrElse(prefs.getInt("launcher_icon", 0)) { LauncherIconChoice.ICON_1 },
+    )
+    val launcherIcon: StateFlow<LauncherIconChoice> = _launcherIcon.asStateFlow()
 
     private fun load(): ThemeSettings {
         val storedPreset = prefs.getInt("preset", -1)
@@ -126,6 +149,26 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
         val settings = _settings.value
         if (isDark && settings.preset == ThemePreset.NEUMORPHIC_BLUE) return
         save(settings.copy(isDark = isDark))
+    }
+
+    fun applyLauncherIcon(choice: LauncherIconChoice) {
+        val packageManager = appContext.packageManager
+        val selected = ComponentName(appContext, "${appContext.packageName}.${choice.aliasName}")
+        packageManager.setComponentEnabledSetting(
+            selected,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP,
+        )
+        LauncherIconChoice.values().filterNot { it == choice }.forEach { other ->
+            val component = ComponentName(appContext, "${appContext.packageName}.${other.aliasName}")
+            packageManager.setComponentEnabledSetting(
+                component,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP,
+            )
+        }
+        prefs.edit().putInt("launcher_icon", choice.ordinal).apply()
+        _launcherIcon.value = choice
     }
 }
 
@@ -260,6 +303,7 @@ fun Modifier.themedBackground(base: Color): Modifier = background(base)
 
 @Composable
 fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier: Modifier = Modifier) {
+    val selectedIcon = repo.launcherIcon.collectAsState().value
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -314,6 +358,40 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
                     Text(stringResource(R.string.theme_builder), style = MaterialTheme.typography.titleMedium)
                     HsvPicker(stringResource(R.string.primary_color), settings.primary) { repo.setCustomColors(primary = it) }
                     HsvPicker(stringResource(R.string.secondary_color), settings.secondary) { repo.setCustomColors(secondary = it) }
+                }
+            }
+        }
+
+        Text(stringResource(R.string.launcher_icon_title), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.launcher_icon_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            LauncherIconChoice.values().forEach { choice ->
+                val shape = RoundedCornerShape(16.dp)
+                Column(
+                    Modifier.width(76.dp).clip(shape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(
+                            if (selectedIcon == choice) 2.dp else 1.dp,
+                            if (selectedIcon == choice) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                            shape,
+                        )
+                        .clickable { repo.applyLauncherIcon(choice) }
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Image(
+                        painterResource(choice.previewRes),
+                        contentDescription = stringResource(choice.labelRes),
+                        Modifier.size(52.dp).clip(RoundedCornerShape(12.dp)),
+                    )
+                    Text(stringResource(choice.labelRes), style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                    if (selectedIcon == choice) {
+                        Icon(Icons.Default.Check, contentDescription = stringResource(R.string.theme_selected), tint = MaterialTheme.colorScheme.primary)
+                    }
                 }
             }
         }

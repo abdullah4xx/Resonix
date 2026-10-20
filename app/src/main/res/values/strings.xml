@@ -78,6 +78,13 @@
     <string name="theme_dark">داكن</string>
     <string name="theme_picker_hint">اختر معاينة شكل التطبيق، ثم اضغط فاتح أو داكن.</string>
     <string name="theme_selected">الثيم المحدد</string>
+    <string name="launcher_icon_title">أيقونة التطبيق</string>
+    <string name="launcher_icon_hint">اختر أيقونة Resonix من التصاميم المرفقة.</string>
+    <string name="launcher_icon_1">أيقونة 1</string>
+    <string name="launcher_icon_2">أيقونة 2</string>
+    <string name="launcher_icon_3">أيقونة 3</string>
+    <string name="launcher_icon_4">أيقونة 4</string>
+    <string name="launcher_icon_5">أيقونة 5</string>
     <string name="theme_discover">اكتشف</string>
     <string name="theme_organic_description">مكتبة تحريرية هادئة وقوائم بسيطة.</string>
     <string name="theme_outline_description">بطاقات محددة بإطارات وظلال سوداء واضحة.</string>
