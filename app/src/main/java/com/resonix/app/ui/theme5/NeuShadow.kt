@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
@@ -24,7 +25,7 @@ data class NeuShadow(
     val dy: Dp,
     val blur: Dp,
     val color: Color,
-    val spread: Dp = Dp.Zero,
+    val spread: Dp = 0.dp,
 )
 
 fun Modifier.neuShadow(shape: Shape, shadows: List<NeuShadow>): Modifier = drawWithCache {
