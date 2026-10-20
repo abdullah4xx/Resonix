@@ -55,7 +55,7 @@
     <string name="dl_cat_music">Music</string>
     <string name="dl_cat_quran">Quran</string>
     <string name="dl_warning">Only download files you own or have permission to save. Streaming-service links are not supported.</string>
-    <string name="dl_youtube_unsupported">YouTube links do not provide a direct audio file for download here. Use YouTube's official offline options, or enter a direct audio file URL you have permission to save.</string>
+    <string name="dl_youtube_unsupported">YouTube links cannot be downloaded as direct audio in Resonix. Use the official YouTube offline feature or a direct audio file URL you have permission to download.</string>
     <string name="dl_direct_audio">Download direct audio</string>
     <string name="dl_default_name">Download</string>
     <string name="cancel">Cancel</string>
