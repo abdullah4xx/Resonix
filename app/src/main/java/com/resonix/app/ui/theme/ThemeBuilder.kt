@@ -119,7 +119,7 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
             preset = preset,
             primary = prefs.getInt("primary", ThemeSettings().primary),
             secondary = prefs.getInt("secondary", ThemeSettings().secondary),
-            isDark = prefs.getBoolean("dark_mode", wasLegacyPreset) && preset != ThemePreset.NEUMORPHIC_BLUE,
+            isDark = prefs.getBoolean("dark_mode", wasLegacyPreset),
         )
     }
 
@@ -134,7 +134,7 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
     }
 
     fun applyPreset(p: ThemePreset) {
-        save(_settings.value.copy(preset = p, isDark = if (p == ThemePreset.NEUMORPHIC_BLUE) false else _settings.value.isDark))
+        save(_settings.value.copy(preset = p))
     }
 
     fun setCustomColors(primary: Int? = null, secondary: Int? = null) {
@@ -143,9 +143,7 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
     }
 
     fun setDarkMode(isDark: Boolean) {
-        val settings = _settings.value
-        if (isDark && settings.preset == ThemePreset.NEUMORPHIC_BLUE) return
-        save(settings.copy(isDark = isDark))
+        save(_settings.value.copy(isDark = isDark))
     }
 
     fun applyLauncherIcon(choice: LauncherIconChoice) {
@@ -320,7 +318,6 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
                 selected = settings.isDark,
                 onClick = { repo.setDarkMode(true) },
                 label = { Text(stringResource(R.string.theme_dark)) },
-                enabled = settings.preset != ThemePreset.NEUMORPHIC_BLUE,
             )
         }
 

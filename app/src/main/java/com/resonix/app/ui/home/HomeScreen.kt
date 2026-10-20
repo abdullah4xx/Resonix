@@ -336,7 +336,13 @@ private fun ThemeShowcase(
                         ) {
                             TrackArt(track, 116.dp, corner = 18.dp)
                             Spacer(Modifier.height(7.dp))
-                            Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(
+                                track.title,
+                                style = MaterialTheme.typography.labelLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
                             Text(track.artist, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     }
@@ -465,7 +471,13 @@ private fun NeumorphicRecentTrack(track: TrackEntity, onClick: () -> Unit) {
     ) {
         TrackArt(track, 42.dp, corner = 999.dp)
         Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
-            Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                track.title,
+                style = MaterialTheme.typography.labelLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
             Text(track.artist, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Icon(Icons.Default.PlayArrow, stringResource(R.string.cd_play_pause), tint = MaterialTheme.colorScheme.primary)

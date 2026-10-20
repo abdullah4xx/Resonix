@@ -86,7 +86,14 @@ fun TrackRow(track: TrackEntity, onClick: () -> Unit, actions: TrackActions) {
                 ),
             )
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text(track.title, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                Text(
+                    track.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 15.sp,
+                    color = Neu.TitleStart,
+                )
                 Text(track.artist, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp, color = Neu.TextSecondary)
             }
             IconButton(onClick = { menu = true }) {
@@ -133,7 +140,14 @@ fun TrackRow(track: TrackEntity, onClick: () -> Unit, actions: TrackActions) {
         ) {
             TrackArt(track, if (preset == ThemePreset.PETAL_PLAYER) 56.dp else 52.dp)
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text(track.title, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                Text(
+                    track.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         if (track.isQuran) Icons.Default.MenuBook else Icons.Default.PhoneAndroid, null,

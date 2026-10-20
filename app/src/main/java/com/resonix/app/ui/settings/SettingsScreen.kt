@@ -76,7 +76,7 @@ fun SettingsScreen(repo: ThemeRepository, modifier: Modifier = Modifier) {
                     Image(
                         painter = painterResource(choice.previewRes),
                         contentDescription = null,
-                        modifier = Modifier.size(60.dp).clip(RoundedCornerShape(14.dp)),
+                        modifier = Modifier.size(76.dp).clip(RoundedCornerShape(22.dp)),
                     )
                     Text(
                         stringResource(choice.labelRes),
