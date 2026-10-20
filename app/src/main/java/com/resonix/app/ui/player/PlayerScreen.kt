@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
@@ -57,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.requiredWidth
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.resonix.app.R
 import com.resonix.app.ui.PlayerViewModel
@@ -66,6 +64,8 @@ import com.resonix.app.ui.theme.ThemePreset
 import com.resonix.app.ui.theme.themeCardShape
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
+import com.resonix.app.ui.theme5.Neu
+import com.resonix.app.ui.theme5.Theme5PlayerLayout
 import java.util.Locale
 
 @Composable
@@ -98,22 +98,52 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
             }
 
             if (themeUsesNeumorphism(preset)) {
-                NeumorphicPlayerLayout(
-                    track = current,
-                    title = ui.title,
-                    artist = ui.artist,
-                    isPlaying = ui.isPlaying,
-                    isFavorite = current?.isFavorite == true,
-                    quranProtected = fx.quranProtected,
-                    waveform = ui.waveform,
-                    positionMs = ui.positionMs,
-                    durationMs = ui.durationMs,
-                    onFavorite = { current?.let(vm::toggleFavorite) },
-                    onPrevious = vm::previous,
-                    onPlayPause = vm::togglePlay,
-                    onNext = vm::next,
-                    onSeek = vm::seekTo,
-                )
+                BoxWithConstraints(Modifier.offset(x = (-20).dp)) {
+                    Theme5PlayerLayout(
+                        title = ui.title,
+                        artist = ui.artist,
+                        device = stringResource(R.string.player_local_audio),
+                        playing = ui.isPlaying,
+                        onRepeat = vm::toggleRepeat,
+                        onNext = vm::next,
+                        onToggle = vm::togglePlay,
+                        onPrevious = vm::previous,
+                        descRepeat = stringResource(R.string.cd_repeat),
+                        descNext = stringResource(R.string.cd_next),
+                        descToggle = stringResource(R.string.cd_play_pause),
+                        descPrevious = stringResource(R.string.cd_previous),
+                        cover = {
+                            TrackArt(
+                                current,
+                                300.dp,
+                                Modifier.fillMaxSize(),
+                                corner = 999.dp,
+                            )
+                        },
+                        modifier = Modifier.requiredWidth(maxWidth + 40.dp).height(647.dp),
+                    )
+                }
+                if (fx.quranProtected) {
+                    Text(
+                        stringResource(R.string.quran_protection_active),
+                        Modifier.align(Alignment.CenterHorizontally),
+                        color = Neu.Icon,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    InteractiveWaveformSeekbar(ui.waveform, ui.positionMs, ui.durationMs, onSeek = vm::seekTo)
+                }
+                IconButton(
+                    onClick = { current?.let(vm::toggleFavorite) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally).size(48.dp),
+                ) {
+                    Icon(
+                        if (current?.isFavorite == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        stringResource(R.string.cd_favorite),
+                        tint = Neu.Icon,
+                    )
+                }
             } else {
                 val artCorner = when (preset) {
                     ThemePreset.VIOLET_CURRENT -> 999.dp
@@ -250,116 +280,6 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
                 }
             }
             Spacer(Modifier.height(24.dp))
-        }
-    }
-}
-
-@Composable
-private fun NeumorphicPlayerLayout(
-    track: com.resonix.app.data.TrackEntity?,
-    title: String,
-    artist: String,
-    isPlaying: Boolean,
-    isFavorite: Boolean,
-    quranProtected: Boolean,
-    waveform: FloatArray,
-    positionMs: Long,
-    durationMs: Long,
-    onFavorite: () -> Unit,
-    onPrevious: () -> Unit,
-    onPlayPause: () -> Unit,
-    onNext: () -> Unit,
-    onSeek: (Long) -> Unit,
-) {
-    val surface = MaterialTheme.colorScheme.surface
-    val raisedSurface = MaterialTheme.colorScheme.surfaceVariant
-    val edge = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 4.dp)) {
-            Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, maxLines = 2)
-            Text(artist, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
-            if (quranProtected) {
-                Text(
-                    stringResource(R.string.quran_protection_active),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
-
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            InteractiveWaveformSeekbar(waveform, positionMs, durationMs, onSeek = onSeek)
-        }
-
-        BoxWithConstraints(Modifier.fillMaxWidth().height(380.dp)) {
-            val railShape = RoundedCornerShape(25.dp)
-            Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.Top) {
-                Column(
-                    Modifier.width(72.dp).fillMaxHeight()
-                        .shadow(
-                            10.dp,
-                            railShape,
-                            ambientColor = surface.copy(alpha = 0.9f),
-                            spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f),
-                        )
-                        .clip(railShape)
-                        .background(raisedSurface)
-                        .border(2.dp, surface.copy(alpha = 0.9f), railShape)
-                        .padding(vertical = 10.dp),
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    IconButton(onClick = onFavorite, modifier = Modifier.size(48.dp)) {
-                        Icon(
-                            if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            stringResource(R.string.cd_favorite),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    }
-                    IconButton(onClick = onNext, modifier = Modifier.size(48.dp)) {
-                        Icon(Icons.Default.SkipNext, stringResource(R.string.cd_next), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    IconButton(
-                        onClick = onPlayPause,
-                        modifier = Modifier.size(52.dp).shadow(7.dp, CircleShape)
-                            .clip(CircleShape).background(MaterialTheme.colorScheme.primary),
-                    ) {
-                        Icon(
-                            if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            stringResource(R.string.cd_play_pause),
-                            Modifier.size(30.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    }
-                    IconButton(onClick = onPrevious, modifier = Modifier.size(48.dp)) {
-                        Icon(Icons.Default.SkipPrevious, stringResource(R.string.cd_previous), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                }
-
-                Spacer(Modifier.width(14.dp))
-                Box(
-                    Modifier.weight(1f).fillMaxHeight().clip(androidx.compose.ui.graphics.RectangleShape),
-                ) {
-                    Box(
-                        Modifier.size(500.dp)
-                            .shadow(
-                                18.dp,
-                                CircleShape,
-                                ambientColor = raisedSurface.copy(alpha = 0.95f),
-                                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.18f),
-                            )
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.secondary)
-                            .border(3.dp, surface, CircleShape),
-                    )
-                    TrackArt(
-                        track,
-                        300.dp,
-                        Modifier.offset(x = 100.dp, y = 100.dp).border(3.dp, surface, CircleShape),
-                        corner = 999.dp,
-                    )
-                }
-            }
         }
     }
 }

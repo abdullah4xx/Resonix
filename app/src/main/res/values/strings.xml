@@ -28,6 +28,8 @@
     <string name="cd_play_pause">تشغيل / إيقاف</string>
     <string name="cd_next">التالي</string>
     <string name="cd_previous">السابق</string>
+    <string name="cd_repeat">تكرار المقطع الحالي</string>
+    <string name="player_local_audio">صوت محلي</string>
 
     <string name="player_now_playing">يتم التشغيل الآن</string>
     <string name="quran_protection_active">حماية القرآن مفعّلة</string>

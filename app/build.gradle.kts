@@ -13,7 +13,7 @@ android {
         applicationId = "com.resonix.app"
         minSdk = 26
         targetSdk = 34
-        versionCode = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
+        versionCode = 110 + (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toInt()
         versionName = "1.1.0"
     }
 

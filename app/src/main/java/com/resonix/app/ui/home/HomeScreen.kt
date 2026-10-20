@@ -70,6 +70,9 @@ import com.resonix.app.ui.theme.themeCardShape
 import com.resonix.app.ui.theme.ThemePreset
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
+import com.resonix.app.ui.theme5.NeuPlaylistTile
+import com.resonix.app.ui.theme5.NeuSectionHeader
+import com.resonix.app.ui.theme5.NeuWideCard
 
 enum class HomeTab(@StringRes val label: Int) {
     TRACKS(R.string.tab_tracks),
@@ -143,7 +146,7 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
             }
         }
         item(key = "theme-showcase") {
-            ThemeShowcase(preset, sorted) { selected ->
+            ThemeShowcase(preset, sorted, onOpenTab = { tab = it }) { selected ->
                 val index = sorted.indexOf(selected)
                 if (index >= 0) vm.play(sorted, index)
             }
@@ -247,7 +250,12 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
 }
 
 @Composable
-private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay: (TrackEntity) -> Unit) {
+private fun ThemeShowcase(
+    preset: ThemePreset,
+    tracks: List<TrackEntity>,
+    onOpenTab: (HomeTab) -> Unit,
+    onPlay: (TrackEntity) -> Unit,
+) {
     if (tracks.isEmpty()) return
     val featured = tracks.first()
     val accent = MaterialTheme.colorScheme.primary
@@ -341,7 +349,12 @@ private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay
                 stringResource(R.string.playlist_quran) to tracks.filter { it.isQuran && !it.isVideo },
             ).filter { it.second.isNotEmpty() }
             Column(Modifier.fillMaxWidth().padding(top = 12.dp)) {
-                NeumorphicSectionHeading(stringResource(R.string.tab_artists))
+                NeuSectionHeader(
+                    stringResource(R.string.tab_artists),
+                    stringResource(R.string.cd_more),
+                    Modifier.padding(horizontal = 20.dp),
+                    onMore = { onOpenTab(HomeTab.ARTISTS) },
+                )
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -351,10 +364,23 @@ private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay
                     }
                 }
 
-                NeumorphicSectionHeading(
+                NeuSectionHeader(
                     stringResource(R.string.tab_playlists),
-                    Modifier.padding(top = 8.dp),
+                    stringResource(R.string.cd_more),
+                    Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp),
+                    onMore = { onOpenTab(HomeTab.PLAYLISTS) },
                 )
+                collections.firstOrNull()?.let { (name, collection) ->
+                    NeuWideCard(
+                        name = name,
+                        count = stringResource(R.string.tracks_count, collection.size),
+                        cover = {
+                            TrackArt(collection.firstOrNull(), 340.dp, Modifier.fillMaxSize(), artHeight = 188.dp)
+                        },
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                        onClick = { onPlay(collection.first()) },
+                    )
+                }
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -364,9 +390,11 @@ private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay
                     }
                 }
 
-                NeumorphicSectionHeading(
+                NeuSectionHeader(
                     stringResource(R.string.tab_tracks),
-                    Modifier.padding(top = 8.dp),
+                    stringResource(R.string.cd_more),
+                    Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp),
+                    onMore = { onOpenTab(HomeTab.TRACKS) },
                 )
                 Column(
                     Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
@@ -380,17 +408,6 @@ private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay
         }
         else -> Unit
     }
-}
-
-@Composable
-private fun NeumorphicSectionHeading(title: String, modifier: Modifier = Modifier) {
-    Text(
-        title,
-        modifier.padding(horizontal = 20.dp, vertical = 6.dp),
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary,
-    )
 }
 
 @Composable
@@ -422,34 +439,12 @@ private fun NeumorphicPlaylistCard(
     tracks: List<TrackEntity>,
     onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(20.dp)
-    val surface = MaterialTheme.colorScheme.surface
-    val raised = MaterialTheme.colorScheme.surfaceVariant
-    Box(Modifier.width(154.dp).height(224.dp)) {
-        Box(
-            Modifier.fillMaxSize().padding(end = 8.dp, bottom = 8.dp)
-                .offset(x = 6.dp, y = 8.dp).clip(shape).background(raised),
-        )
-        Column(
-            Modifier.fillMaxSize().padding(end = 8.dp, bottom = 8.dp)
-                .shadow(8.dp, shape, ambientColor = surface, spotColor = raised)
-                .clip(shape)
-                .background(surface)
-                .border(3.dp, surface.copy(alpha = 0.95f), shape)
-                .clickable(onClick = onClick)
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            TrackArt(tracks.firstOrNull(), 114.dp, corner = 18.dp, artHeight = 148.dp)
-            Text(title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(
-                stringResource(R.string.tracks_count, tracks.size),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-    }
+    NeuPlaylistTile(
+        name = title,
+        count = stringResource(R.string.tracks_count, tracks.size),
+        cover = { TrackArt(tracks.firstOrNull(), 86.dp, artHeight = 167.dp) },
+        onClick = onClick,
+    )
 }
 
 @Composable

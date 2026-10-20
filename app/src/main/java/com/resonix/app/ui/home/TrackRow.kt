@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -45,6 +46,8 @@ import com.resonix.app.ui.theme.ThemePreset
 import com.resonix.app.ui.theme.themeCardShape
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
+import com.resonix.app.ui.theme5.Neu
+import com.resonix.app.ui.theme5.neuShadow
 
 class TrackActions(
     val play: (List<TrackEntity>, Int) -> Unit,
@@ -58,6 +61,51 @@ fun TrackRow(track: TrackEntity, onClick: () -> Unit, actions: TrackActions) {
     val preset = LocalThemePreset.current
     val shape = themeCardShape(preset)
     val isEditorial = preset == ThemePreset.ORGANIC_LIGHT
+    if (preset == ThemePreset.NEUMORPHIC_BLUE) {
+        val neuShape = RoundedCornerShape(20.dp)
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
+                .neuShadow(neuShape, Neu.TileShadows)
+                .background(Neu.Tile, neuShape)
+                .border(4.dp, Neu.TileBorder, neuShape)
+                .clip(neuShape).clickable(onClick = onClick)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TrackArt(
+                track,
+                52.dp,
+                corner = 10.dp,
+                artHeight = 52.dp,
+                artShape = RoundedCornerShape(
+                    topStart = 30.dp,
+                    topEnd = 30.dp,
+                    bottomEnd = 10.dp,
+                    bottomStart = 10.dp,
+                ),
+            )
+            Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                Text(track.title, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                Text(track.artist, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp, color = Neu.TextSecondary)
+            }
+            IconButton(onClick = { menu = true }) {
+                Icon(Icons.Default.MoreVert, stringResource(R.string.cd_more), tint = Neu.Icon)
+            }
+            DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(if (track.isFavorite) R.string.menu_remove_fav else R.string.menu_add_fav)) },
+                    leadingIcon = { Icon(if (track.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null) },
+                    onClick = { menu = false; actions.favorite(track) },
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(if (track.isQuran) R.string.menu_unmark_quran else R.string.menu_mark_quran)) },
+                    leadingIcon = { Icon(Icons.Default.MenuBook, null) },
+                    onClick = { menu = false; actions.quran(track, !track.isQuran) },
+                )
+            }
+        }
+        return
+    }
     Column(Modifier.fillMaxWidth()) {
         Row(
             Modifier.fillMaxWidth()

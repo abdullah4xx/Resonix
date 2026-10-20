@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -43,7 +44,8 @@ object ArtLoader {
 
     suspend fun load(ctx: Context, uri: String, path: String, isVideo: Boolean, px: Int): Bitmap? =
         withContext(Dispatchers.IO) {
-            cache.get(uri)?.let { return@withContext it }
+            val cacheKey = "$uri:$px"
+            cache.get(cacheKey)?.let { return@withContext it }
             var bmp: Bitmap? = null
             if (Build.VERSION.SDK_INT >= 29) {
                 bmp = runCatching { ctx.contentResolver.loadThumbnail(Uri.parse(uri), Size(px, px), null) }.getOrNull()
@@ -63,7 +65,7 @@ object ArtLoader {
                     r.release()
                 }
             }
-            bmp?.also { cache.put(uri, it) }
+            bmp?.also { cache.put(cacheKey, it) }
         }
 
     private fun decodeScaled(bytes: ByteArray, px: Int): Bitmap? {
@@ -83,6 +85,7 @@ fun TrackArt(
     modifier: Modifier = Modifier,
     corner: Dp? = null,
     artHeight: Dp = size,
+    artShape: Shape? = null,
 ) {
     val ctx = LocalContext.current
     val preset = LocalThemePreset.current
@@ -94,11 +97,12 @@ fun TrackArt(
         else -> 10.dp
     }
     val px = with(LocalDensity.current) { maxOf(size, artHeight).roundToPx() }
-    val bmp by produceState<Bitmap?>(null, track?.uri) {
+    val shape = artShape ?: RoundedCornerShape(artCorner)
+    val bmp by produceState<Bitmap?>(null, track?.uri, px) {
         value = track?.let { ArtLoader.load(ctx, it.uri, it.path, it.isVideo, px) }
     }
     Box(
-        modifier.size(width = size, height = artHeight).clip(RoundedCornerShape(artCorner)).background(MaterialTheme.colorScheme.surfaceVariant),
+        modifier.size(width = size, height = artHeight).clip(shape).background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center,
     ) {
         val b = bmp

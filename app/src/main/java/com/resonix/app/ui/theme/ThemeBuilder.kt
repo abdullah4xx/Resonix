@@ -99,7 +99,7 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
             preset = preset,
             primary = prefs.getInt("primary", ThemeSettings().primary),
             secondary = prefs.getInt("secondary", ThemeSettings().secondary),
-            isDark = prefs.getBoolean("dark_mode", wasLegacyPreset),
+            isDark = prefs.getBoolean("dark_mode", wasLegacyPreset) && preset != ThemePreset.NEUMORPHIC_BLUE,
         )
     }
 
@@ -114,7 +114,7 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
     }
 
     fun applyPreset(p: ThemePreset) {
-        save(_settings.value.copy(preset = p))
+        save(_settings.value.copy(preset = p, isDark = if (p == ThemePreset.NEUMORPHIC_BLUE) false else _settings.value.isDark))
     }
 
     fun setCustomColors(primary: Int? = null, secondary: Int? = null) {
@@ -123,7 +123,9 @@ class ThemeRepository @Inject constructor(@ApplicationContext ctx: Context) {
     }
 
     fun setDarkMode(isDark: Boolean) {
-        save(_settings.value.copy(isDark = isDark))
+        val settings = _settings.value
+        if (isDark && settings.preset == ThemePreset.NEUMORPHIC_BLUE) return
+        save(settings.copy(isDark = isDark))
     }
 }
 
@@ -189,7 +191,7 @@ private fun palette(preset: ThemePreset, isDark: Boolean, settings: ThemeSetting
         )
         ThemePreset.NEUMORPHIC_BLUE, ThemePreset.OLED -> if (isLight) ThemePalette(
             Color(0xFFB3E5FC), Color(0xFFD5EAF5), Color(0xFF9CD3FF), Color(0xFF173456),
-            Color(0xFF426987), Color(0xFF438FBE), Color.White, Color(0xFF5BA9D8), Color(0xFFC8E4F1),
+            Color(0xFF64B5F6), Color(0xFF72A8D5), Color.White, Color(0xFF6FABD3), Color(0xFFC8E4F1),
         ) else ThemePalette(
             Color(0xFF20374D), Color(0xFF29455E), Color(0xFF315674), Color(0xFFEDF7FF),
             Color(0xFFC3D9E9), Color(0xFF91CCEF), Color(0xFF173047), Color(0xFF438FBE), Color(0xFF3E5F7A),
@@ -278,6 +280,7 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
                 selected = settings.isDark,
                 onClick = { repo.setDarkMode(true) },
                 label = { Text(stringResource(R.string.theme_dark)) },
+                enabled = settings.preset != ThemePreset.NEUMORPHIC_BLUE,
             )
         }
 

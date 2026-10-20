@@ -160,6 +160,15 @@ class PlayerViewModel @Inject constructor(
     fun next() { controller?.seekToNextMediaItem() }
     fun previous() { controller?.seekToPreviousMediaItem() }
     fun seekTo(ms: Long) { controller?.seekTo(ms) }
+    fun toggleRepeat() {
+        controller?.let { player ->
+            player.repeatMode = if (player.repeatMode == Player.REPEAT_MODE_ONE) {
+                Player.REPEAT_MODE_OFF
+            } else {
+                Player.REPEAT_MODE_ONE
+            }
+        }
+    }
 
     fun toggleFavorite(track: TrackEntity) {
         viewModelScope.launch { repo.setFavorite(track.id, !track.isFavorite) }

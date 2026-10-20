@@ -149,19 +149,11 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
                     if (ui.mediaId != null) {
                         MiniPlayer(ui, current, onToggle = vm::togglePlay, onNext = vm::next, onOpen = { showPlayer = true })
                     }
-                    NavigationBar(
-                        containerColor = if (themeUsesNeumorphism(LocalThemePreset.current)) {
-                            MaterialTheme.colorScheme.surfaceVariant
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        },
-                        tonalElevation = if (themeUsesNeumorphism(LocalThemePreset.current)) 6.dp else 0.dp,
-                    ) {
-                        val selectedColor = MaterialTheme.colorScheme.primary
+                    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                         val navColors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = selectedColor,
-                            selectedTextColor = selectedColor,
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedIconColor = MaterialTheme.colorScheme.onBackground,
+                            selectedTextColor = MaterialTheme.colorScheme.onBackground,
+                            indicatorColor = Color.Transparent,
                             unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

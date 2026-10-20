@@ -28,6 +28,8 @@
     <string name="cd_play_pause">Play / Pause</string>
     <string name="cd_next">Next</string>
     <string name="cd_previous">Previous</string>
+    <string name="cd_repeat">Repeat current track</string>
+    <string name="player_local_audio">LOCAL AUDIO</string>
 
     <string name="player_now_playing">Now Playing</string>
     <string name="quran_protection_active">Quran protection active</string>

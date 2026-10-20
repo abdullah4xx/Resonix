@@ -262,9 +262,10 @@
       "id": "theme5",
       "name": {
         "en": "Neumorphic Blue",
-        "ar": "أزرق نيومورفي"
+        "ar": "نيومورفيزم أزرق"
       },
       "reference": "https://github.com/abdullah4xx/Neumorphism_Music_Player_Futter",
+      "mode": "light",
       "description": {
         "en": "Soft blue relief, layered highlights, sculpted playlist tiles, and a cropped circular player.",
         "ar": "ملمس أزرق بارز، ولمعات ناعمة، وبطاقات قوائم منحوتة، ومشغّل دائري."
@@ -274,11 +275,16 @@
         "surface": "#d5eaf5",
         "surfaceAlt": "#9cd3ff",
         "text": "#173456",
-        "textMuted": "#587b9a",
-        "accent": "#438fbe",
+        "textMuted": "#64b5f6",
+        "accent": "#72a8d5",
         "accentText": "#ffffff",
         "outline": "#c8e4f1",
-        "player": "#b3e5fc"
+        "player": "#b3e5fc",
+        "sectionTitle": "#6fabd3",
+        "shadowDark": "#90b8d9",
+        "softShadow": "#a6cee0",
+        "deepShadow": "#76b4cd",
+        "highlight": "#ffffff"
       },
       "modes": {
         "light": {
@@ -286,8 +292,8 @@
           "surface": "#d5eaf5",
           "surfaceAlt": "#9cd3ff",
           "text": "#173456",
-          "textMuted": "#426987",
-          "accent": "#438fbe",
+          "textMuted": "#64b5f6",
+          "accent": "#72a8d5",
           "accentText": "#ffffff",
           "outline": "#c8e4f1",
           "player": "#b3e5fc"
@@ -305,10 +311,60 @@
         }
       },
       "shape": {
-        "screen": 28,
+        "screen": 0,
         "card": 20,
-        "art": 999,
+        "art": 30,
         "control": 25
+      },
+      "typography": {
+        "playerTitle": { "size": 32, "weight": "bold", "gradient": true },
+        "playerArtist": { "size": 18, "weight": "regular", "gradient": true },
+        "playerDevice": { "size": 14, "weight": "bold", "color": "textMuted" },
+        "sectionTitle": { "size": 20, "weight": "bold", "color": "sectionTitle" },
+        "tileName": { "size": 12, "weight": "regular", "gradient": true },
+        "tileCount": { "size": 9, "weight": "bold", "color": "textMuted" },
+        "wideCardName": { "size": 18, "weight": "regular", "color": "#ffffff" },
+        "wideCardCount": { "size": 9, "weight": "regular", "color": "#ffffff" }
+      },
+      "player": {
+        "titleBlock": { "top": 80, "start": 20, "gaps": [10, 5], "gapToRow": 50 },
+        "controlPill": {
+          "width": 70, "height": 417, "radius": 25, "border": { "width": 1, "color": "highlight" },
+          "padding": 20, "iconSize": 30, "iconOrder": ["replay", "skipNext", "pause", "skipPrevious"],
+          "shadows": [{ "dx": 10, "dy": 0, "blur": 20, "spread": 0, "color": "shadowDark" }],
+          "startMargin": 20, "gapToCircle": 50
+        },
+        "bigCircle": {
+          "diameter": 500, "visibleFraction": 0.5422,
+          "border": { "width": 3, "color": "highlight" }, "fill": "surface",
+          "shadows": [{ "dx": 2, "dy": 20, "blur": 20, "spread": 10, "color": "shadowDark" }]
+        },
+        "coverCircle": { "diameter": 300, "offset": [100, 100], "border": { "width": 3, "color": "highlight" } }
+      },
+      "playlist": {
+        "pagePaddingH": 40,
+        "sectionHeader": { "gapBelow": 30, "pill": { "width": 35, "height": 22, "radius": 20, "color": "pill" } },
+        "tile": {
+          "width": 134, "height": 252, "radius": 20, "border": { "width": 4, "color": "tileBorder" },
+          "padding": 20, "fill": "tile",
+          "cover": { "height": 167, "radii": [30, 30, 10, 10], "gapBelow": 10 },
+          "shadowsInPaintOrder": [
+            { "dx": -5, "dy": 0, "blur": 2, "color": "highlight" },
+            { "dx": 4, "dy": 4, "blur": 4, "color": "softShadow" },
+            { "dx": 10, "dy": 10, "blur": 22, "color": "deepShadow" },
+            { "dx": -10, "dy": -10, "blur": 22, "color": "highlight" }
+          ]
+        },
+        "wideCard": {
+          "width": 340, "height": 188, "radius": 11, "border": { "width": 4, "color": "highlight" },
+          "textInset": { "start": 15, "fromTop": 140 },
+          "shadowsInPaintOrder": [
+            { "dx": 4, "dy": 4, "blur": 4, "color": "softShadow" },
+            { "dx": 10, "dy": 10, "blur": 22, "color": "deepShadow" },
+            { "dx": -5, "dy": 0, "blur": 2, "color": "highlight" }
+          ]
+        },
+        "gaps": { "afterHeader": 30, "betweenRows": 30 }
       },
       "layout": {
         "library": "neumorphic-feed",
