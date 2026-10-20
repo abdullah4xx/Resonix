@@ -55,6 +55,8 @@
     <string name="dl_cat_music">Music</string>
     <string name="dl_cat_quran">Quran</string>
     <string name="dl_warning">Only download files you own or have permission to save. Streaming-service links are not supported.</string>
+    <string name="dl_youtube_unsupported">YouTube links do not provide a direct audio file for download here. Use YouTube's official offline options, or enter a direct audio file URL you have permission to save.</string>
+    <string name="dl_direct_audio">Download direct audio</string>
     <string name="dl_default_name">Download</string>
     <string name="cancel">Cancel</string>
 
@@ -72,6 +74,17 @@
     <string name="theme_appearance">Appearance</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="theme_picker_hint">Choose a preview of the app, then select light or dark.</string>
+    <string name="theme_selected">Selected theme</string>
+    <string name="theme_discover">Discover</string>
+    <string name="theme_organic_description">A quiet editorial library with simple lists.</string>
+    <string name="theme_outline_description">Bold outlined cards with crisp dark edges.</string>
+    <string name="theme_violet_description">A midnight violet space with a warm orange player.</string>
+    <string name="theme_petal_description">Soft playlists and a blush player panel.</string>
+    <string name="theme_neumorphic_description">Raised blue playlist tiles, inset artwork discs, a vertical control rail, and a cropped record player.</string>
+    <string name="theme_recently_added">Recently added</string>
+    <string name="theme_featured_track">Featured track</string>
+    <string name="theme_daily_mix">Your daily mix</string>
     <string name="theme_builder">Custom Theme Builder</string>
     <string name="primary_color">Primary color</string>
     <string name="secondary_color">Secondary color</string>

@@ -3,6 +3,8 @@ package com.resonix.app.ui.theme
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,8 +14,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,25 +26,27 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.resonix.app.R
@@ -228,11 +234,11 @@ fun buildColorScheme(s: ThemeSettings): ColorScheme {
 val LocalThemePreset = staticCompositionLocalOf { ThemePreset.ORGANIC_LIGHT }
 
 fun themeCardShape(preset: ThemePreset): Shape = when (preset) {
-    ThemePreset.OUTLINE_MONO -> RoundedCornerShape(9.dp)
-    ThemePreset.VIOLET_CURRENT, ThemePreset.GLASS -> RoundedCornerShape(18.dp)
+    ThemePreset.ORGANIC_LIGHT, ThemePreset.DEFAULT, ThemePreset.CUSTOM -> RoundedCornerShape(16.dp)
+    ThemePreset.OUTLINE_MONO -> RoundedCornerShape(6.dp)
+    ThemePreset.VIOLET_CURRENT, ThemePreset.GLASS -> RoundedCornerShape(14.dp)
     ThemePreset.PETAL_PLAYER -> RoundedCornerShape(24.dp)
-    ThemePreset.NEUMORPHIC_BLUE, ThemePreset.OLED -> RoundedCornerShape(20.dp)
-    else -> RoundedCornerShape(18.dp)
+    ThemePreset.NEUMORPHIC_BLUE, ThemePreset.OLED -> RoundedCornerShape(22.dp)
 }
 
 fun themeUsesOutline(preset: ThemePreset) =
@@ -250,23 +256,6 @@ fun ResonixTheme(settings: ThemeSettings, content: @Composable () -> Unit) {
 
 fun Modifier.themedBackground(base: Color): Modifier = background(base)
 
-/** Soft glow along the left/right screen edges, tinted by the artwork's Palette color. */
-fun Modifier.edgeGlow(color: Color?): Modifier {
-    if (color == null) return this
-    return drawBehind {
-        val w = 28.dp.toPx()
-        drawRect(
-            Brush.horizontalGradient(listOf(color.copy(alpha = 0.55f), Color.Transparent), startX = 0f, endX = w),
-            size = Size(w, size.height),
-        )
-        drawRect(
-            Brush.horizontalGradient(listOf(Color.Transparent, color.copy(alpha = 0.55f)), startX = size.width - w, endX = size.width),
-            topLeft = Offset(size.width - w, 0f),
-            size = Size(w, size.height),
-        )
-    }
-}
-
 @Composable
 fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier: Modifier = Modifier) {
     Column(
@@ -274,28 +263,7 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(stringResource(R.string.theme_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-
-        Text(stringResource(R.string.theme_presets), style = MaterialTheme.typography.titleMedium)
-        Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            listOf(
-                ThemePreset.ORGANIC_LIGHT,
-                ThemePreset.OUTLINE_MONO,
-                ThemePreset.VIOLET_CURRENT,
-                ThemePreset.PETAL_PLAYER,
-                ThemePreset.NEUMORPHIC_BLUE,
-                ThemePreset.CUSTOM,
-            ).forEach { p ->
-                FilterChip(
-                    selected = settings.preset == p,
-                    onClick = { repo.applyPreset(p) },
-                    label = { Text(stringResource(p.labelRes), maxLines = 1) },
-                )
-            }
-        }
-
+        Text(stringResource(R.string.theme_picker_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(stringResource(R.string.theme_appearance), style = MaterialTheme.typography.titleMedium)
         Row(
             Modifier.fillMaxWidth(),
@@ -313,6 +281,27 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
             )
         }
 
+        listOf(
+            ThemePreset.ORGANIC_LIGHT,
+            ThemePreset.OUTLINE_MONO,
+            ThemePreset.VIOLET_CURRENT,
+            ThemePreset.PETAL_PLAYER,
+            ThemePreset.NEUMORPHIC_BLUE,
+        ).forEach { preset ->
+            ThemePresetCard(
+                preset = preset,
+                selected = settings.preset == preset,
+                isDark = settings.isDark,
+                onClick = { repo.applyPreset(preset) },
+            )
+        }
+
+        FilterChip(
+            selected = settings.preset == ThemePreset.CUSTOM,
+            onClick = { repo.applyPreset(ThemePreset.CUSTOM) },
+            label = { Text(stringResource(R.string.preset_custom)) },
+        )
+
         if (settings.preset == ThemePreset.CUSTOM) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -326,19 +315,224 @@ fun ThemeBuilderScreen(repo: ThemeRepository, settings: ThemeSettings, modifier:
             }
         }
 
-        val previewPalette = palette(settings.preset, settings.isDark, settings)
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(48.dp).clip(CircleShape).background(previewPalette.accent))
-            Box(Modifier.size(48.dp).clip(CircleShape).background(previewPalette.secondary))
-            Text(stringResource(R.string.theme_preview), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-
         Spacer(Modifier.height(24.dp))
         Text(
             stringResource(R.string.crafted_by, DEVELOPER_AUTHOR),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun ThemePresetCard(preset: ThemePreset, selected: Boolean, isDark: Boolean, onClick: () -> Unit) {
+    val preview = palette(preset, isDark, ThemeSettings(preset = preset, isDark = isDark))
+    val shape = themeCardShape(preset)
+    Column(
+        Modifier.fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface)
+            .border(
+                width = if (selected) 2.dp else 1.dp,
+                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                shape = shape,
+            )
+            .clickable(onClick = onClick)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        ThemeMiniPreview(preset, preview)
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(preset.labelRes), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(
+                        when (preset) {
+                            ThemePreset.ORGANIC_LIGHT -> R.string.theme_organic_description
+                            ThemePreset.OUTLINE_MONO -> R.string.theme_outline_description
+                            ThemePreset.VIOLET_CURRENT -> R.string.theme_violet_description
+                            ThemePreset.PETAL_PLAYER -> R.string.theme_petal_description
+                            else -> R.string.theme_neumorphic_description
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            if (selected) {
+                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.theme_selected), tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ThemeMiniPreview(preset: ThemePreset, colors: ThemePalette) {
+    val frameShape = RoundedCornerShape(11.dp)
+    Column(
+        Modifier.fillMaxWidth().height(144.dp).clip(frameShape).background(colors.background).padding(9.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp),
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(if (preset == ThemePreset.OUTLINE_MONO) R.string.theme_discover else R.string.nav_library),
+                Modifier.weight(1f),
+                style = MaterialTheme.typography.labelLarge,
+                color = colors.text,
+                fontWeight = FontWeight.Bold,
+            )
+            Box(
+                Modifier.size(19.dp).clip(CircleShape)
+                    .background(if (preset == ThemePreset.VIOLET_CURRENT) colors.accent else colors.surfaceAlt),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    if (preset == ThemePreset.VIOLET_CURRENT) Icons.Default.PlayArrow else Icons.Default.Search,
+                    contentDescription = null,
+                    modifier = Modifier.size(13.dp),
+                    tint = if (preset == ThemePreset.VIOLET_CURRENT) colors.onAccent else colors.text,
+                )
+            }
+        }
+
+        when (preset) {
+            ThemePreset.ORGANIC_LIGHT -> {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    repeat(3) { index ->
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Box(
+                                Modifier.fillMaxWidth().height(42.dp).clip(RoundedCornerShape(8.dp))
+                                    .background(if (index == 1) colors.surfaceAlt else colors.surface),
+                            )
+                            MiniTextLine(colors.text, Modifier.fillMaxWidth(.78f))
+                        }
+                    }
+                }
+                MiniTrackLine(colors, preset, widthFraction = .82f)
+                MiniNavigation(colors, selectedIndex = 1)
+            }
+            ThemePreset.OUTLINE_MONO -> {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    repeat(3) {
+                        Box(
+                            Modifier.weight(1f).height(43.dp).background(colors.surface)
+                                .border(1.dp, colors.outline, RoundedCornerShape(5.dp)),
+                        )
+                    }
+                }
+                MiniTrackLine(colors, preset)
+                MiniNavigation(colors, selectedIndex = 0)
+            }
+            ThemePreset.VIOLET_CURRENT -> {
+                Box(
+                    Modifier.fillMaxWidth().height(42.dp).clip(RoundedCornerShape(8.dp))
+                        .background(colors.accent),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.size(30.dp).clip(CircleShape).background(colors.surfaceAlt))
+                        Spacer(Modifier.width(9.dp))
+                        MiniTextLine(colors.onAccent, Modifier.fillMaxWidth(.35f))
+                    }
+                }
+                MiniTrackLine(colors, preset)
+                MiniNavigation(colors, selectedIndex = 1)
+            }
+            ThemePreset.PETAL_PLAYER -> {
+                Box(
+                    Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(17.dp))
+                        .background(colors.secondary.copy(alpha = .55f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(Modifier.size(35.dp).clip(CircleShape).background(colors.surface))
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    repeat(3) { MiniTrackLine(colors, preset, Modifier.weight(1f)) }
+                }
+                MiniNavigation(colors, selectedIndex = 2)
+            }
+            ThemePreset.NEUMORPHIC_BLUE -> {
+                Row(Modifier.fillMaxWidth().height(68.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(
+                        Modifier.width(28.dp).height(62.dp).clip(RoundedCornerShape(10.dp))
+                            .background(colors.surfaceAlt).border(2.dp, colors.surface, RoundedCornerShape(10.dp))
+                            .padding(vertical = 4.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        repeat(4) {
+                            Box(Modifier.size(7.dp).clip(CircleShape).background(colors.accent))
+                        }
+                    }
+                    Box(Modifier.weight(1f).fillMaxSize().clip(RoundedCornerShape(5.dp))) {
+                        Box(
+                            Modifier.size(132.dp).offset(x = 36.dp, y = 4.dp)
+                                .clip(CircleShape).background(colors.surfaceAlt)
+                                .border(2.dp, colors.surface, CircleShape),
+                        )
+                        Box(
+                            Modifier.size(78.dp).offset(x = 64.dp, y = 30.dp)
+                                .clip(CircleShape).background(colors.secondary)
+                                .border(2.dp, colors.surface, CircleShape),
+                        )
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+}
+
+@Composable
+private fun MiniTrackLine(colors: ThemePalette, preset: ThemePreset, modifier: Modifier = Modifier, widthFraction: Float = 1f) {
+    val outline = preset == ThemePreset.OUTLINE_MONO
+    Row(
+        modifier.fillMaxWidth(widthFraction)
+            .height(27.dp)
+            .clip(if (outline) RoundedCornerShape(4.dp) else RoundedCornerShape(8.dp))
+            .background(colors.surface)
+            .then(if (outline) Modifier.border(1.dp, colors.outline, RoundedCornerShape(4.dp)) else Modifier)
+            .padding(horizontal = 6.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier.size(15.dp).clip(if (preset == ThemePreset.NEUMORPHIC_BLUE) CircleShape else RoundedCornerShape(4.dp))
+                .background(colors.secondary),
+        )
+        Spacer(Modifier.width(6.dp))
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            MiniTextLine(colors.text, Modifier.fillMaxWidth(.7f))
+            MiniTextLine(colors.muted, Modifier.fillMaxWidth(.42f))
+        }
+        Box(Modifier.size(5.dp).clip(CircleShape).background(colors.accent))
+    }
+}
+
+@Composable
+private fun MiniTextLine(color: Color, modifier: Modifier = Modifier) {
+    Box(modifier.height(4.dp).clip(CircleShape).background(color.copy(alpha = .78f)))
+}
+
+@Composable
+private fun MiniNavigation(colors: ThemePalette, selectedIndex: Int) {
+    Row(
+        Modifier.fillMaxWidth().height(17.dp).clip(RoundedCornerShape(6.dp))
+            .background(colors.surface).padding(horizontal = 12.dp, vertical = 5.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        repeat(4) { index ->
+            Box(
+                Modifier.width(if (index == selectedIndex) 22.dp else 12.dp)
+                    .height(4.dp).clip(CircleShape)
+                    .background(if (index == selectedIndex) colors.accent else colors.muted.copy(alpha = .35f)),
+            )
+        }
     }
 }
 

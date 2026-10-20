@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.resonix.app.R
 import com.resonix.app.data.TrackEntity
 import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.ThemePreset
 import com.resonix.app.ui.theme.themeCardShape
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
@@ -55,51 +57,69 @@ fun TrackRow(track: TrackEntity, onClick: () -> Unit, actions: TrackActions) {
     var menu by remember { mutableStateOf(false) }
     val preset = LocalThemePreset.current
     val shape = themeCardShape(preset)
-    Row(
-        Modifier.fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp)
-            .shadow(if (themeUsesNeumorphism(preset)) 5.dp else 0.dp, shape)
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.surface)
-            .then(
-                if (themeUsesOutline(preset)) Modifier.border(1.dp, MaterialTheme.colorScheme.outline, shape)
-                else Modifier
-            )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TrackArt(track, 52.dp)
-        Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-            Text(track.title, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.Medium, fontSize = 15.sp)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    if (track.isQuran) Icons.Default.MenuBook else Icons.Default.PhoneAndroid, null,
-                    Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    val isEditorial = preset == ThemePreset.ORGANIC_LIGHT
+    Column(Modifier.fillMaxWidth()) {
+        Row(
+            Modifier.fillMaxWidth()
+                .padding(horizontal = if (isEditorial) 20.dp else 12.dp, vertical = if (isEditorial) 0.dp else 4.dp)
+                .shadow(if (themeUsesNeumorphism(preset)) 5.dp else 0.dp, shape)
+                .clip(shape)
+                .background(
+                    when (preset) {
+                        ThemePreset.VIOLET_CURRENT -> MaterialTheme.colorScheme.surfaceVariant
+                        ThemePreset.PETAL_PLAYER -> MaterialTheme.colorScheme.surface
+                        else -> if (isEditorial) Color.Transparent else MaterialTheme.colorScheme.surface
+                    }
                 )
-                Spacer(Modifier.width(5.dp))
-                Text(
-                    track.artist, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                .then(
+                    if (themeUsesOutline(preset)) Modifier.border(1.5.dp, MaterialTheme.colorScheme.outline, shape)
+                    else Modifier
                 )
+                .clickable(onClick = onClick)
+                .padding(
+                    horizontal = if (isEditorial) 0.dp else 12.dp,
+                    vertical = if (preset == ThemePreset.PETAL_PLAYER) 12.dp else 8.dp,
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TrackArt(track, if (preset == ThemePreset.PETAL_PLAYER) 56.dp else 52.dp)
+            Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                Text(track.title, maxLines = 1, overflow = TextOverflow.Ellipsis, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        if (track.isQuran) Icons.Default.MenuBook else Icons.Default.PhoneAndroid, null,
+                        Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Text(
+                        track.artist, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            Box {
+                IconButton(onClick = { menu = true }) {
+                    Icon(Icons.Default.MoreVert, stringResource(R.string.cd_more), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(if (track.isFavorite) R.string.menu_remove_fav else R.string.menu_add_fav)) },
+                        leadingIcon = { Icon(if (track.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null) },
+                        onClick = { menu = false; actions.favorite(track) },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(if (track.isQuran) R.string.menu_unmark_quran else R.string.menu_mark_quran)) },
+                        leadingIcon = { Icon(Icons.Default.MenuBook, null) },
+                        onClick = { menu = false; actions.quran(track, !track.isQuran) },
+                    )
+                }
             }
         }
-        Box {
-            IconButton(onClick = { menu = true }) {
-                Icon(Icons.Default.MoreVert, stringResource(R.string.cd_more), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(if (track.isFavorite) R.string.menu_remove_fav else R.string.menu_add_fav)) },
-                    leadingIcon = { Icon(if (track.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null) },
-                    onClick = { menu = false; actions.favorite(track) },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(if (track.isQuran) R.string.menu_unmark_quran else R.string.menu_mark_quran)) },
-                    leadingIcon = { Icon(Icons.Default.MenuBook, null) },
-                    onClick = { menu = false; actions.quran(track, !track.isQuran) },
-                )
-            }
+        if (isEditorial) {
+            Box(
+                Modifier.fillMaxWidth().padding(start = 84.dp, end = 20.dp)
+                    .height(1.dp).background(MaterialTheme.colorScheme.outline.copy(alpha = 0.65f)),
+            )
         }
     }
 }

@@ -1,0 +1,7 @@
+Lucide icons included in this directory are sourced from:
+https://github.com/lucide-icons/lucide
+
+Toools.design lists Lucide as a free icon resource:
+https://www.toools.design/
+
+The icon files are distributed under the terms in LICENSE.

@@ -55,6 +55,8 @@
     <string name="dl_cat_music">موسيقى</string>
     <string name="dl_cat_quran">قرآن</string>
     <string name="dl_warning">نزّل فقط الملفات التي تملكها أو لديك إذن بحفظها. روابط منصات البث غير مدعومة.</string>
+    <string name="dl_youtube_unsupported">روابط YouTube لا توفر ملفًا صوتيًا مباشرًا للتنزيل هنا. استخدم خيارات المشاهدة دون اتصال الرسمية في YouTube، أو أدخل رابط ملف صوتي مباشر تملك حق تنزيله.</string>
+    <string name="dl_direct_audio">تنزيل ملف صوتي مباشر</string>
     <string name="dl_default_name">تنزيل</string>
     <string name="cancel">إلغاء</string>
 
@@ -72,6 +74,17 @@
     <string name="theme_appearance">المظهر</string>
     <string name="theme_light">فاتح</string>
     <string name="theme_dark">داكن</string>
+    <string name="theme_picker_hint">اختر معاينة شكل التطبيق، ثم اضغط فاتح أو داكن.</string>
+    <string name="theme_selected">الثيم المحدد</string>
+    <string name="theme_discover">اكتشف</string>
+    <string name="theme_organic_description">مكتبة تحريرية هادئة وقوائم بسيطة.</string>
+    <string name="theme_outline_description">بطاقات محددة بإطارات وظلال سوداء واضحة.</string>
+    <string name="theme_violet_description">مساحة بنفسجية ليلية مع مشغّل برتقالي بارز.</string>
+    <string name="theme_petal_description">قوائم ناعمة وبطاقة مشغّل وردية.</string>
+    <string name="theme_neumorphic_description">قوائم زرقاء بارزة وأغلفة دائرية ومسار تحكم رأسي ومشغّل أسطواني مقصوص.</string>
+    <string name="theme_recently_added">أُضيف مؤخرًا</string>
+    <string name="theme_featured_track">المقطع المميز</string>
+    <string name="theme_daily_mix">مزيجك اليوم</string>
     <string name="theme_builder">منشئ الثيم المخصّص</string>
     <string name="primary_color">اللون الأساسي</string>
     <string name="secondary_color">اللون الثانوي</string>

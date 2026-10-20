@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f3f4">
+    <title>Resonix — Theme Preview</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="studio-bar">
+      <a class="wordmark" href="#" aria-label="Resonix theme preview">
+        <span class="wordmark-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 10l12-2M5.5 20.5A2.5 2.5 0 1 0 5.5 15a2.5 2.5 0 0 0 0 5.5ZM17.5 18.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
+        </span>
+        <span>Resonix</span>
+        <span class="wordmark-divider">/</span>
+        <span class="wordmark-label" data-copy="previewLabel">Theme preview</span>
+      </a>
+      <div class="studio-controls">
+        <div class="view-switch" role="group" aria-label="Preview screen">
+          <button type="button" class="view-option is-active" data-view="library" data-copy="libraryTab">Library</button>
+          <button type="button" class="view-option" data-view="player" data-copy="playerTab">Player</button>
+        </div>
+        <button type="button" class="mode-switch" id="mode-switch" aria-label="Switch to dark mode">
+          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-label">Dark</span>
+        </button>
+        <button type="button" class="locale-switch" id="locale-switch" aria-label="Switch language">عربي</button>
+      </div>
+    </header>
+
+    <main class="showcase">
+      <section class="theme-rail" aria-label="Choose a theme">
+        <div class="rail-heading">
+          <h1 data-copy="chooseTitle">Choose a visual world</h1>
+          <p data-copy="chooseDescription">Four references, carried into one player.</p>
+        </div>
+        <div class="theme-options" id="theme-options"></div>
+        <p class="rail-note" data-copy="referenceNote">Artwork and logos are intentionally replaced with neutral placeholders.</p>
+      </section>
+
+      <section class="preview-stage" aria-label="Live theme preview">
+        <div class="stage-meta">
+          <div>
+            <p class="stage-eyebrow" data-copy="liveLabel">LIVE PREVIEW</p>
+            <h2 id="active-theme-name">Organic Light</h2>
+          </div>
+          <p class="stage-description" id="active-theme-description"></p>
+        </div>
+        <div class="device-wrap">
+          <div class="device" id="device" data-theme="theme1">
+            <div class="device-status">
+              <span>9:41</span>
+              <span class="status-icons" aria-hidden="true">
+                <span class="ui-icon ui-icon-signal"></span>
+                <span class="ui-icon ui-icon-wifi"></span>
+                <span class="ui-icon ui-icon-battery"></span>
+              </span>
+            </div>
+            <div class="app-screen" id="app-screen"></div>
+          </div>
+        </div>
+        <p class="stage-hint" data-copy="stageHint">Tap a track to open the player. Play controls are interactive.</p>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

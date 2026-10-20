@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -65,6 +67,7 @@ import com.resonix.app.ui.LanguageSwitcher
 import com.resonix.app.ui.PlayerViewModel
 import com.resonix.app.ui.theme.LocalThemePreset
 import com.resonix.app.ui.theme.themeCardShape
+import com.resonix.app.ui.theme.ThemePreset
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
 
@@ -89,6 +92,7 @@ private data class QuickItem(val filter: QuickFilter, val label: String, val ico
 @Composable
 fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier = Modifier) {
     val tracks by vm.tracks.collectAsStateWithLifecycle()
+    val preset = LocalThemePreset.current
     var tab by rememberSaveable { mutableStateOf(HomeTab.TRACKS) }
     var quick by rememberSaveable { mutableStateOf(QuickFilter.NONE) }
     var sort by rememberSaveable { mutableStateOf(SortOrder.NEWEST) }
@@ -136,6 +140,12 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
                 )
                 IconButton(onClick = onOpenSearch) { Icon(Icons.Default.Search, stringResource(R.string.nav_search)) }
                 LanguageSwitcher()
+            }
+        }
+        item(key = "theme-showcase") {
+            ThemeShowcase(preset, sorted) { selected ->
+                val index = sorted.indexOf(selected)
+                if (index >= 0) vm.play(sorted, index)
             }
         }
         item(key = "quick") {
@@ -233,6 +243,237 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ThemeShowcase(preset: ThemePreset, tracks: List<TrackEntity>, onPlay: (TrackEntity) -> Unit) {
+    if (tracks.isEmpty()) return
+    val featured = tracks.first()
+    val accent = MaterialTheme.colorScheme.primary
+    val cardShape = themeCardShape(preset)
+
+    when (preset) {
+        ThemePreset.ORGANIC_LIGHT, ThemePreset.DEFAULT, ThemePreset.CUSTOM -> Unit
+        ThemePreset.OUTLINE_MONO -> {
+            Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                Text(
+                    stringResource(R.string.theme_discover),
+                    Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(tracks.distinctBy { it.artist }.take(5), key = { "discover-${it.id}" }) { track ->
+                        Column(
+                            Modifier.width(90.dp)
+                                .border(1.5.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
+                                .background(MaterialTheme.colorScheme.surface)
+                                .clickable { onPlay(track) }
+                                .padding(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                        ) {
+                            TrackArt(track, 76.dp, corner = 5.dp)
+                            Text(track.artist, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                }
+            }
+        }
+        ThemePreset.VIOLET_CURRENT -> {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(
+                    stringResource(R.string.theme_featured_track),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Row(
+                    Modifier.fillMaxWidth().padding(top = 8.dp).clip(cardShape)
+                        .background(accent)
+                        .clickable { onPlay(featured) }
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TrackArt(featured, 78.dp, corner = 999.dp)
+                    Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                        Text(featured.title, color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(featured.artist, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .82f), style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                    Icon(Icons.Default.PlayArrow, stringResource(R.string.cd_play_pause), tint = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
+        }
+        ThemePreset.PETAL_PLAYER -> {
+            Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                Text(
+                    stringResource(R.string.tab_playlists),
+                    Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(tracks.take(6), key = { "petal-${it.id}" }) { track ->
+                        Column(
+                            Modifier.width(132.dp).clip(cardShape)
+                                .background(MaterialTheme.colorScheme.surface)
+                                .clickable { onPlay(track) }
+                                .padding(8.dp),
+                        ) {
+                            TrackArt(track, 116.dp, corner = 18.dp)
+                            Spacer(Modifier.height(7.dp))
+                            Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(track.artist, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                }
+            }
+        }
+        ThemePreset.NEUMORPHIC_BLUE, ThemePreset.OLED -> {
+            val artists = tracks.filter { it.artist.isNotBlank() }.distinctBy { it.artist }.take(6)
+            val collections = listOf(
+                stringResource(R.string.playlist_music) to tracks.filter { !it.isQuran && !it.isVideo },
+                stringResource(R.string.playlist_quran) to tracks.filter { it.isQuran && !it.isVideo },
+            ).filter { it.second.isNotEmpty() }
+            Column(Modifier.fillMaxWidth().padding(top = 12.dp)) {
+                NeumorphicSectionHeading(stringResource(R.string.tab_artists))
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(artists, key = { "neumo-artist-${it.id}" }) { track ->
+                        NeumorphicArtist(track, onClick = { onPlay(track) })
+                    }
+                }
+
+                NeumorphicSectionHeading(
+                    stringResource(R.string.tab_playlists),
+                    Modifier.padding(top = 8.dp),
+                )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(collections, key = { it.first }) { (name, collection) ->
+                        NeumorphicPlaylistCard(name, collection, onClick = { onPlay(collection.first()) })
+                    }
+                }
+
+                NeumorphicSectionHeading(
+                    stringResource(R.string.tab_tracks),
+                    Modifier.padding(top = 8.dp),
+                )
+                Column(
+                    Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    tracks.take(3).forEach { track ->
+                        NeumorphicRecentTrack(track) { onPlay(track) }
+                    }
+                }
+            }
+        }
+        else -> Unit
+    }
+}
+
+@Composable
+private fun NeumorphicSectionHeading(title: String, modifier: Modifier = Modifier) {
+    Text(
+        title,
+        modifier.padding(horizontal = 20.dp, vertical = 6.dp),
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+    )
+}
+
+@Composable
+private fun NeumorphicArtist(track: TrackEntity, onClick: () -> Unit) {
+    val surface = MaterialTheme.colorScheme.surface
+    val raised = MaterialTheme.colorScheme.surfaceVariant
+    Column(
+        Modifier.width(78.dp).clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(7.dp),
+    ) {
+        Box(Modifier.size(78.dp), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.size(72.dp)
+                    .shadow(9.dp, CircleShape, ambientColor = surface, spotColor = raised)
+                    .clip(CircleShape)
+                    .background(surface)
+                    .border(3.dp, surface.copy(alpha = 0.9f), CircleShape),
+            )
+            TrackArt(track, 54.dp, corner = 999.dp)
+        }
+        Text(track.artist, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+@Composable
+private fun NeumorphicPlaylistCard(
+    title: String,
+    tracks: List<TrackEntity>,
+    onClick: () -> Unit,
+) {
+    val shape = RoundedCornerShape(20.dp)
+    val surface = MaterialTheme.colorScheme.surface
+    val raised = MaterialTheme.colorScheme.surfaceVariant
+    Box(Modifier.width(154.dp).height(224.dp)) {
+        Box(
+            Modifier.fillMaxSize().padding(end = 8.dp, bottom = 8.dp)
+                .offset(x = 6.dp, y = 8.dp).clip(shape).background(raised),
+        )
+        Column(
+            Modifier.fillMaxSize().padding(end = 8.dp, bottom = 8.dp)
+                .shadow(8.dp, shape, ambientColor = surface, spotColor = raised)
+                .clip(shape)
+                .background(surface)
+                .border(3.dp, surface.copy(alpha = 0.95f), shape)
+                .clickable(onClick = onClick)
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TrackArt(tracks.firstOrNull(), 114.dp, corner = 18.dp, artHeight = 148.dp)
+            Text(title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                stringResource(R.string.tracks_count, tracks.size),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun NeumorphicRecentTrack(track: TrackEntity, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(28.dp)
+    val surface = MaterialTheme.colorScheme.surface
+    val raised = MaterialTheme.colorScheme.surfaceVariant
+    Row(
+        Modifier.fillMaxWidth()
+            .shadow(7.dp, shape, ambientColor = surface, spotColor = raised)
+            .clip(shape)
+            .background(raised)
+            .border(2.dp, surface.copy(alpha = 0.85f), shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TrackArt(track, 42.dp, corner = 999.dp)
+        Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
+            Text(track.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(track.artist, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+        Icon(Icons.Default.PlayArrow, stringResource(R.string.cd_play_pause), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(8.dp))
     }
 }
 

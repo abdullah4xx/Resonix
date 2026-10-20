@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.offset
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -95,66 +97,85 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
                 Spacer(Modifier.size(48.dp))
             }
 
-            val artCorner = when (preset) {
-                ThemePreset.VIOLET_CURRENT, ThemePreset.NEUMORPHIC_BLUE -> 999.dp
-                ThemePreset.OUTLINE_MONO -> 12.dp
-                ThemePreset.PETAL_PLAYER -> 40.dp
-                else -> 30.dp
-            }
-            val artShape = if (artCorner == 999.dp) CircleShape else RoundedCornerShape(artCorner)
-            TrackArt(
-                current,
-                280.dp,
-                Modifier.align(Alignment.CenterHorizontally)
-                    .shadow(if (themeUsesNeumorphism(preset)) 10.dp else 0.dp, artShape),
-                corner = artCorner,
-            )
-
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(ui.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
-                Text(ui.artist, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (fx.quranProtected) {
-                    Text(
-                        stringResource(R.string.quran_protection_active),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
+            if (themeUsesNeumorphism(preset)) {
+                NeumorphicPlayerLayout(
+                    track = current,
+                    title = ui.title,
+                    artist = ui.artist,
+                    isPlaying = ui.isPlaying,
+                    isFavorite = current?.isFavorite == true,
+                    quranProtected = fx.quranProtected,
+                    waveform = ui.waveform,
+                    positionMs = ui.positionMs,
+                    durationMs = ui.durationMs,
+                    onFavorite = { current?.let(vm::toggleFavorite) },
+                    onPrevious = vm::previous,
+                    onPlayPause = vm::togglePlay,
+                    onNext = vm::next,
+                    onSeek = vm::seekTo,
+                )
+            } else {
+                val artCorner = when (preset) {
+                    ThemePreset.VIOLET_CURRENT -> 999.dp
+                    ThemePreset.OUTLINE_MONO -> 12.dp
+                    ThemePreset.PETAL_PLAYER -> 40.dp
+                    else -> 30.dp
                 }
-            }
+                val artShape = if (artCorner == 999.dp) CircleShape else RoundedCornerShape(artCorner)
+                TrackArt(
+                    current,
+                    280.dp,
+                    Modifier.align(Alignment.CenterHorizontally)
+                        .shadow(if (themeUsesNeumorphism(preset)) 10.dp else 0.dp, artShape),
+                    corner = artCorner,
+                )
 
-            // Time flows left-to-right even in Arabic, so the waveform and media controls stay LTR.
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                    InteractiveWaveformSeekbar(ui.waveform, ui.positionMs, ui.durationMs, onSeek = vm::seekTo)
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(ui.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
+                    Text(ui.artist, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (fx.quranProtected) {
+                        Text(
+                            stringResource(R.string.quran_protection_active),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
+                }
 
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = { current?.let(vm::toggleFavorite) }) {
-                            Icon(
-                                if (current?.isFavorite == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                stringResource(R.string.cd_favorite), tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                        IconButton(onClick = vm::previous) {
-                            Icon(Icons.Default.SkipPrevious, stringResource(R.string.cd_previous), Modifier.size(36.dp))
-                        }
-                        IconButton(
-                            onClick = vm::togglePlay,
-                            modifier = Modifier.size(72.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+                // Time flows left-to-right even in Arabic, so the waveform and media controls stay LTR.
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
+                        InteractiveWaveformSeekbar(ui.waveform, ui.positionMs, ui.durationMs, onSeek = vm::seekTo)
+
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Icon(
-                                if (ui.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                stringResource(R.string.cd_play_pause),
-                                Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary,
-                            )
+                            IconButton(onClick = { current?.let(vm::toggleFavorite) }) {
+                                Icon(
+                                    if (current?.isFavorite == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    stringResource(R.string.cd_favorite), tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                            IconButton(onClick = vm::previous) {
+                                Icon(Icons.Default.SkipPrevious, stringResource(R.string.cd_previous), Modifier.size(36.dp))
+                            }
+                            IconButton(
+                                onClick = vm::togglePlay,
+                                modifier = Modifier.size(72.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+                            ) {
+                                Icon(
+                                    if (ui.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    stringResource(R.string.cd_play_pause),
+                                    Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary,
+                                )
+                            }
+                            IconButton(onClick = vm::next) {
+                                Icon(Icons.Default.SkipNext, stringResource(R.string.cd_next), Modifier.size(36.dp))
+                            }
+                            Spacer(Modifier.size(48.dp))
                         }
-                        IconButton(onClick = vm::next) {
-                            Icon(Icons.Default.SkipNext, stringResource(R.string.cd_next), Modifier.size(36.dp))
-                        }
-                        Spacer(Modifier.size(48.dp))
                     }
                 }
             }
@@ -229,6 +250,116 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
                 }
             }
             Spacer(Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun NeumorphicPlayerLayout(
+    track: com.resonix.app.data.TrackEntity?,
+    title: String,
+    artist: String,
+    isPlaying: Boolean,
+    isFavorite: Boolean,
+    quranProtected: Boolean,
+    waveform: FloatArray,
+    positionMs: Long,
+    durationMs: Long,
+    onFavorite: () -> Unit,
+    onPrevious: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
+    onSeek: (Long) -> Unit,
+) {
+    val surface = MaterialTheme.colorScheme.surface
+    val raisedSurface = MaterialTheme.colorScheme.surfaceVariant
+    val edge = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 4.dp)) {
+            Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, maxLines = 2)
+            Text(artist, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+            if (quranProtected) {
+                Text(
+                    stringResource(R.string.quran_protection_active),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            InteractiveWaveformSeekbar(waveform, positionMs, durationMs, onSeek = onSeek)
+        }
+
+        BoxWithConstraints(Modifier.fillMaxWidth().height(380.dp)) {
+            val railShape = RoundedCornerShape(25.dp)
+            Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.Top) {
+                Column(
+                    Modifier.width(72.dp).fillMaxHeight()
+                        .shadow(
+                            10.dp,
+                            railShape,
+                            ambientColor = surface.copy(alpha = 0.9f),
+                            spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f),
+                        )
+                        .clip(railShape)
+                        .background(raisedSurface)
+                        .border(2.dp, surface.copy(alpha = 0.9f), railShape)
+                        .padding(vertical = 10.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    IconButton(onClick = onFavorite, modifier = Modifier.size(48.dp)) {
+                        Icon(
+                            if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            stringResource(R.string.cd_favorite),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                    IconButton(onClick = onNext, modifier = Modifier.size(48.dp)) {
+                        Icon(Icons.Default.SkipNext, stringResource(R.string.cd_next), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    IconButton(
+                        onClick = onPlayPause,
+                        modifier = Modifier.size(52.dp).shadow(7.dp, CircleShape)
+                            .clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+                    ) {
+                        Icon(
+                            if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            stringResource(R.string.cd_play_pause),
+                            Modifier.size(30.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                    IconButton(onClick = onPrevious, modifier = Modifier.size(48.dp)) {
+                        Icon(Icons.Default.SkipPrevious, stringResource(R.string.cd_previous), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+
+                Spacer(Modifier.width(14.dp))
+                Box(
+                    Modifier.weight(1f).fillMaxHeight().clip(androidx.compose.ui.graphics.RectangleShape),
+                ) {
+                    Box(
+                        Modifier.size(500.dp)
+                            .shadow(
+                                18.dp,
+                                CircleShape,
+                                ambientColor = raisedSurface.copy(alpha = 0.95f),
+                                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.18f),
+                            )
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .border(3.dp, surface, CircleShape),
+                    )
+                    TrackArt(
+                        track,
+                        300.dp,
+                        Modifier.offset(x = 100.dp, y = 100.dp).border(3.dp, surface, CircleShape),
+                        corner = 999.dp,
+                    )
+                }
+            }
         }
     }
 }

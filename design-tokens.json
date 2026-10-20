@@ -1,0 +1,324 @@
+{
+  "viewport": {
+    "widthDp": 360,
+    "heightDp": 800,
+    "cssPixelsPerDp": 1
+  },
+  "themes": [
+    {
+      "id": "theme1",
+      "name": {
+        "en": "Organic Light",
+        "ar": "العضوي الفاتح"
+      },
+      "reference": "ui theme/theme1/Pasted image (3)ss.png",
+      "description": {
+        "en": "Editorial white library, restrained green actions, and rounded monochrome controls.",
+        "ar": "مكتبة بيضاء بطابع تحريري ولمسات خضراء هادئة وعناصر تحكم مستديرة."
+      },
+      "colors": {
+        "background": "#f3f2ee",
+        "surface": "#faf9f6",
+        "surfaceAlt": "#ebe9e3",
+        "text": "#161615",
+        "textMuted": "#77756f",
+        "accent": "#111110",
+        "accentText": "#ffffff",
+        "outline": "#d8d6cf",
+        "player": "#111110"
+      },
+      "modes": {
+        "light": {
+          "background": "#f3f2ee",
+          "surface": "#faf9f6",
+          "surfaceAlt": "#ebe9e3",
+          "text": "#161615",
+          "textMuted": "#77756f",
+          "accent": "#111110",
+          "accentText": "#ffffff",
+          "outline": "#d8d6cf",
+          "player": "#111110"
+        },
+        "dark": {
+          "background": "#171614",
+          "surface": "#211f1b",
+          "surfaceAlt": "#2b2823",
+          "text": "#f5f2eb",
+          "textMuted": "#bbb5aa",
+          "accent": "#f5f2eb",
+          "accentText": "#151412",
+          "outline": "#45413a",
+          "player": "#f5f2eb"
+        }
+      },
+      "shape": {
+        "screen": 30,
+        "card": 20,
+        "art": 36,
+        "control": 999
+      },
+      "layout": {
+        "library": "organic-light",
+        "player": "organic-contour",
+        "density": "comfortable"
+      },
+      "referenceNotes": [
+        "Library direction follows the selected primary reference: theme1/Pasted image (3)ss.png.",
+        "The player uses the user's explicit screen reference from theme1/Pasted image.png; it overrides the other reference for this screen only.",
+        "Album imagery and lyric text are replaced by a neutral abstract cover and an Up next queue row."
+      ]
+    },
+    {
+      "id": "theme2",
+      "name": {
+        "en": "Outline Mono",
+        "ar": "أحادي بخطوط"
+      },
+      "reference": "ui theme/theme2/Pasted image.png",
+      "description": {
+        "en": "Bright monochrome screens, decisive black outlines, and offset ink shadows.",
+        "ar": "واجهات أحادية مشرقة بإطارات سوداء واضحة وظلال حبر بارزة."
+      },
+      "colors": {
+        "background": "#efefef",
+        "surface": "#ffffff",
+        "surfaceAlt": "#f5f5f5",
+        "text": "#111111",
+        "textMuted": "#646464",
+        "accent": "#111111",
+        "accentText": "#ffffff",
+        "outline": "#171717",
+        "player": "#ffffff"
+      },
+      "modes": {
+        "light": {
+          "background": "#efefef",
+          "surface": "#ffffff",
+          "surfaceAlt": "#f5f5f5",
+          "text": "#111111",
+          "textMuted": "#646464",
+          "accent": "#111111",
+          "accentText": "#ffffff",
+          "outline": "#171717",
+          "player": "#ffffff"
+        },
+        "dark": {
+          "background": "#111111",
+          "surface": "#1a1a1a",
+          "surfaceAlt": "#242424",
+          "text": "#f7f7f7",
+          "textMuted": "#b7b7b7",
+          "accent": "#f7f7f7",
+          "accentText": "#111111",
+          "outline": "#e5e5e5",
+          "player": "#171717"
+        }
+      },
+      "shape": {
+        "screen": 28,
+        "card": 18,
+        "art": 16,
+        "control": 999
+      },
+      "layout": {
+        "library": "discover",
+        "player": "outlined-player",
+        "density": "compact"
+      },
+      "referenceNotes": [
+        "Primary: theme2/Pasted image.png; onboarding imagery is not part of the prototype"
+      ]
+    },
+    {
+      "id": "theme3",
+      "name": {
+        "en": "Violet Current",
+        "ar": "التيار البنفسجي"
+      },
+      "reference": "ui theme/theme3/Pasted image (2).png",
+      "description": {
+        "en": "A midnight music space with electric violet surroundings and warm orange playback accents.",
+        "ar": "مساحة موسيقية ليلية بنفسجية مع لمسات تشغيل برتقالية دافئة."
+      },
+      "colors": {
+        "background": "#101049",
+        "surface": "#101018",
+        "surfaceAlt": "#211a39",
+        "text": "#fbf9ff",
+        "textMuted": "#b3a9c8",
+        "accent": "#ff8b20",
+        "accentText": "#17111f",
+        "outline": "#382a54",
+        "player": "#100d19",
+        "ambient": "#6514b9"
+      },
+      "modes": {
+        "light": {
+          "background": "#f1eafa",
+          "surface": "#ffffff",
+          "surfaceAlt": "#e9def5",
+          "text": "#211535",
+          "textMuted": "#6f6280",
+          "accent": "#ef821b",
+          "accentText": "#24172b",
+          "outline": "#d5c5e8",
+          "player": "#ffffff",
+          "ambient": "#7544be"
+        },
+        "dark": {
+          "background": "#11104c",
+          "surface": "#100e18",
+          "surfaceAlt": "#201939",
+          "text": "#fbf9ff",
+          "textMuted": "#b3a9c8",
+          "accent": "#ff8b20",
+          "accentText": "#17111f",
+          "outline": "#3a2b58",
+          "player": "#100d19",
+          "ambient": "#6514b9"
+        }
+      },
+      "shape": {
+        "screen": 28,
+        "card": 18,
+        "art": 22,
+        "control": 999
+      },
+      "layout": {
+        "library": "midnight-feed",
+        "player": "warm-hero",
+        "density": "comfortable"
+      },
+      "referenceNotes": [
+        "Primary: theme3/Pasted image (2).png",
+        "The light pink player reference is treated as a secondary structural reference, not as a replacement for the primary dark palette."
+      ]
+    },
+    {
+      "id": "theme4",
+      "name": {
+        "en": "Petal Player",
+        "ar": "مشغّل بتلات"
+      },
+      "reference": "ui theme/theme4/Pasted image.png",
+      "description": {
+        "en": "Soft white playlist surfaces, a blush album panel, and a small rose progress marker.",
+        "ar": "قوائم بيضاء ناعمة ولوحة غلاف وردية ومؤشر تقدم بلون الورد."
+      },
+      "colors": {
+        "background": "#efedf1",
+        "surface": "#ffffff",
+        "surfaceAlt": "#f9f6fa",
+        "text": "#17151a",
+        "textMuted": "#77717a",
+        "accent": "#ec65b5",
+        "accentText": "#ffffff",
+        "outline": "#ded9df",
+        "player": "#ffffff",
+        "blush": "#f7d9f2"
+      },
+      "modes": {
+        "light": {
+          "background": "#efedf1",
+          "surface": "#ffffff",
+          "surfaceAlt": "#faf7fb",
+          "text": "#17151a",
+          "textMuted": "#77717a",
+          "accent": "#ec65b5",
+          "accentText": "#ffffff",
+          "outline": "#ded9df",
+          "player": "#ffffff",
+          "blush": "#f7d9f2"
+        },
+        "dark": {
+          "background": "#19151a",
+          "surface": "#211c22",
+          "surfaceAlt": "#2d2530",
+          "text": "#f9f4fa",
+          "textMuted": "#bdb2c0",
+          "accent": "#ff91d2",
+          "accentText": "#251522",
+          "outline": "#443846",
+          "player": "#211c22",
+          "blush": "#4d3047"
+        }
+      },
+      "shape": {
+        "screen": 34,
+        "card": 24,
+        "art": 30,
+        "control": 999
+      },
+      "layout": {
+        "library": "playlist-list",
+        "player": "blush-hero",
+        "density": "airy"
+      },
+      "referenceNotes": [
+        "Primary: theme4/Pasted image.png"
+      ]
+    },
+    {
+      "id": "theme5",
+      "name": {
+        "en": "Neumorphic Blue",
+        "ar": "أزرق نيومورفي"
+      },
+      "reference": "https://github.com/abdullah4xx/Neumorphism_Music_Player_Futter",
+      "description": {
+        "en": "Soft blue relief, layered highlights, sculpted playlist tiles, and a cropped circular player.",
+        "ar": "ملمس أزرق بارز، ولمعات ناعمة، وبطاقات قوائم منحوتة، ومشغّل دائري."
+      },
+      "colors": {
+        "background": "#b3e5fc",
+        "surface": "#d5eaf5",
+        "surfaceAlt": "#9cd3ff",
+        "text": "#173456",
+        "textMuted": "#587b9a",
+        "accent": "#438fbe",
+        "accentText": "#ffffff",
+        "outline": "#c8e4f1",
+        "player": "#b3e5fc"
+      },
+      "modes": {
+        "light": {
+          "background": "#b3e5fc",
+          "surface": "#d5eaf5",
+          "surfaceAlt": "#9cd3ff",
+          "text": "#173456",
+          "textMuted": "#426987",
+          "accent": "#438fbe",
+          "accentText": "#ffffff",
+          "outline": "#c8e4f1",
+          "player": "#b3e5fc"
+        },
+        "dark": {
+          "background": "#20374d",
+          "surface": "#29455e",
+          "surfaceAlt": "#315674",
+          "text": "#edf7ff",
+          "textMuted": "#c3d9e9",
+          "accent": "#91ccef",
+          "accentText": "#173047",
+          "outline": "#3e5f7a",
+          "player": "#20374d"
+        }
+      },
+      "shape": {
+        "screen": 28,
+        "card": 20,
+        "art": 999,
+        "control": 25
+      },
+      "layout": {
+        "library": "neumorphic-feed",
+        "player": "neumorphic-crop",
+        "density": "comfortable"
+      },
+      "referenceNotes": [
+        "Layout and shadow treatment ported from the user's forked Flutter screens.",
+        "The music artwork is replaced with neutral abstract album art."
+      ]
+    }
+  ]
+}

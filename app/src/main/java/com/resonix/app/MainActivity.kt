@@ -87,7 +87,6 @@ import com.resonix.app.ui.theme.ResonixTheme
 import com.resonix.app.ui.theme.LocalThemePreset
 import com.resonix.app.ui.theme.ThemeBuilderScreen
 import com.resonix.app.ui.theme.ThemeRepository
-import com.resonix.app.ui.theme.edgeGlow
 import com.resonix.app.ui.theme.themeCardShape
 import com.resonix.app.ui.theme.themeUsesNeumorphism
 import com.resonix.app.ui.theme.themeUsesOutline
@@ -142,7 +141,6 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
     Box(
         Modifier.fillMaxSize()
             .themedBackground(MaterialTheme.colorScheme.background)
-            .edgeGlow(ui.glow)
     ) {
         Scaffold(
             containerColor = Color.Transparent,
@@ -151,11 +149,19 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
                     if (ui.mediaId != null) {
                         MiniPlayer(ui, current, onToggle = vm::togglePlay, onNext = vm::next, onOpen = { showPlayer = true })
                     }
-                    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                    NavigationBar(
+                        containerColor = if (themeUsesNeumorphism(LocalThemePreset.current)) {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        },
+                        tonalElevation = if (themeUsesNeumorphism(LocalThemePreset.current)) 6.dp else 0.dp,
+                    ) {
+                        val selectedColor = MaterialTheme.colorScheme.primary
                         val navColors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.onBackground,
-                            selectedTextColor = MaterialTheme.colorScheme.onBackground,
-                            indicatorColor = Color.Transparent,
+                            selectedIconColor = selectedColor,
+                            selectedTextColor = selectedColor,
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
                             unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

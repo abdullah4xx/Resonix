@@ -11,6 +11,7 @@ import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -76,26 +77,33 @@ object ArtLoader {
 }
 
 @Composable
-fun TrackArt(track: TrackEntity?, size: Dp, modifier: Modifier = Modifier, corner: Dp? = null) {
+fun TrackArt(
+    track: TrackEntity?,
+    size: Dp,
+    modifier: Modifier = Modifier,
+    corner: Dp? = null,
+    artHeight: Dp = size,
+) {
     val ctx = LocalContext.current
     val preset = LocalThemePreset.current
     val artCorner = corner ?: when (preset) {
         ThemePreset.OUTLINE_MONO -> 6.dp
-        ThemePreset.VIOLET_CURRENT, ThemePreset.NEUMORPHIC_BLUE -> 999.dp
+        ThemePreset.VIOLET_CURRENT -> 14.dp
+        ThemePreset.NEUMORPHIC_BLUE -> 999.dp
         ThemePreset.PETAL_PLAYER -> 18.dp
         else -> 10.dp
     }
-    val px = with(LocalDensity.current) { size.roundToPx() }
+    val px = with(LocalDensity.current) { maxOf(size, artHeight).roundToPx() }
     val bmp by produceState<Bitmap?>(null, track?.uri) {
         value = track?.let { ArtLoader.load(ctx, it.uri, it.path, it.isVideo, px) }
     }
     Box(
-        modifier.size(size).clip(RoundedCornerShape(artCorner)).background(MaterialTheme.colorScheme.surfaceVariant),
+        modifier.size(width = size, height = artHeight).clip(RoundedCornerShape(artCorner)).background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center,
     ) {
         val b = bmp
         if (b != null) {
-            Image(b.asImageBitmap(), null, Modifier.size(size), contentScale = ContentScale.Crop)
+            Image(b.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
         } else {
             Icon(
                 if (track?.isQuran == true) Icons.Default.MenuBook else Icons.Default.MusicNote,
