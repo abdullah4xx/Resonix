@@ -35,7 +35,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.border
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LibraryMusic
@@ -60,9 +60,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
@@ -73,6 +75,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.resonix.app.ui.PlayerUiState
@@ -81,9 +84,13 @@ import com.resonix.app.ui.browser.BrowserScreen
 import com.resonix.app.ui.home.HomeScreen
 import com.resonix.app.ui.player.PlayerScreen
 import com.resonix.app.ui.theme.ResonixTheme
+import com.resonix.app.ui.theme.LocalThemePreset
 import com.resonix.app.ui.theme.ThemeBuilderScreen
 import com.resonix.app.ui.theme.ThemeRepository
 import com.resonix.app.ui.theme.edgeGlow
+import com.resonix.app.ui.theme.themeCardShape
+import com.resonix.app.ui.theme.themeUsesNeumorphism
+import com.resonix.app.ui.theme.themeUsesOutline
 import com.resonix.app.ui.theme.themedBackground
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -104,6 +111,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val settings by themeRepo.settings.collectAsStateWithLifecycle()
+            SideEffect {
+                val bars = WindowCompat.getInsetsController(window, window.decorView)
+                bars.isAppearanceLightStatusBars = !settings.isDark
+                bars.isAppearanceLightNavigationBars = !settings.isDark
+            }
             // Layout direction follows the language the user picked (Arabic = RTL, English = LTR).
             val rtl = LocalConfiguration.current.layoutDirection == View.LAYOUT_DIRECTION_RTL
             CompositionLocalProvider(
@@ -129,7 +141,7 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
 
     Box(
         Modifier.fillMaxSize()
-            .themedBackground(settings.preset, MaterialTheme.colorScheme.background)
+            .themedBackground(MaterialTheme.colorScheme.background)
             .edgeGlow(ui.glow)
     ) {
         Scaffold(
@@ -198,9 +210,18 @@ private fun ResonixRoot(themeRepo: ThemeRepository, vm: PlayerViewModel = hiltVi
 @Composable
 private fun MiniPlayer(ui: PlayerUiState, track: TrackEntity?, onToggle: () -> Unit, onNext: () -> Unit, onOpen: () -> Unit) {
     val tint = ui.glow?.copy(alpha = 0.35f) ?: Color.Transparent
+    val preset = LocalThemePreset.current
+    val shape = themeCardShape(preset)
     Surface(
-        Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 6.dp).clickable(onClick = onOpen),
-        shape = RoundedCornerShape(18.dp),
+        Modifier.fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .shadow(if (themeUsesNeumorphism(preset)) 6.dp else 0.dp, shape)
+            .then(
+                if (themeUsesOutline(preset)) Modifier.border(1.dp, MaterialTheme.colorScheme.outline, shape)
+                else Modifier
+            )
+            .clickable(onClick = onOpen),
+        shape = shape,
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Row(

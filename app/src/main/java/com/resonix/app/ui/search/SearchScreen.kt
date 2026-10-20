@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -29,10 +28,13 @@ import com.resonix.app.R
 import com.resonix.app.ui.PlayerViewModel
 import com.resonix.app.ui.home.TrackActions
 import com.resonix.app.ui.home.TrackRow
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.themeCardShape
 
 @Composable
 fun SearchScreen(vm: PlayerViewModel, modifier: Modifier = Modifier) {
     val tracks by vm.tracks.collectAsStateWithLifecycle()
+    val preset = LocalThemePreset.current
     var query by rememberSaveable { mutableStateOf("") }
     val q = query.trim()
     val results = remember(tracks, q) {
@@ -46,7 +48,7 @@ fun SearchScreen(vm: PlayerViewModel, modifier: Modifier = Modifier) {
             value = query,
             onValueChange = { query = it },
             singleLine = true,
-            shape = RoundedCornerShape(28.dp),
+            shape = themeCardShape(preset),
             placeholder = { Text(stringResource(R.string.search_hint)) },
             leadingIcon = { Icon(Icons.Default.Search, null) },
             trailingIcon = {

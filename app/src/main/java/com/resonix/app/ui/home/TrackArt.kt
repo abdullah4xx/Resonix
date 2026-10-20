@@ -31,6 +31,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.resonix.app.data.TrackEntity
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.ThemePreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -74,14 +76,21 @@ object ArtLoader {
 }
 
 @Composable
-fun TrackArt(track: TrackEntity?, size: Dp, modifier: Modifier = Modifier, corner: Dp = 10.dp) {
+fun TrackArt(track: TrackEntity?, size: Dp, modifier: Modifier = Modifier, corner: Dp? = null) {
     val ctx = LocalContext.current
+    val preset = LocalThemePreset.current
+    val artCorner = corner ?: when (preset) {
+        ThemePreset.OUTLINE_MONO -> 6.dp
+        ThemePreset.VIOLET_CURRENT, ThemePreset.NEUMORPHIC_BLUE -> 999.dp
+        ThemePreset.PETAL_PLAYER -> 18.dp
+        else -> 10.dp
+    }
     val px = with(LocalDensity.current) { size.roundToPx() }
     val bmp by produceState<Bitmap?>(null, track?.uri) {
         value = track?.let { ArtLoader.load(ctx, it.uri, it.path, it.isVideo, px) }
     }
     Box(
-        modifier.size(size).clip(RoundedCornerShape(corner)).background(MaterialTheme.colorScheme.surfaceVariant),
+        modifier.size(size).clip(RoundedCornerShape(artCorner)).background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center,
     ) {
         val b = bmp

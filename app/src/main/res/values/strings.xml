@@ -64,6 +64,14 @@
     <string name="preset_oled">OLED أسود نقي</string>
     <string name="preset_glass">زجاجي</string>
     <string name="preset_custom">مخصّص</string>
+    <string name="preset_organic">عضوي فاتح</string>
+    <string name="preset_outline">أحادي بخطوط</string>
+    <string name="preset_violet">التيار البنفسجي</string>
+    <string name="preset_petal">مشغّل بتلات</string>
+    <string name="preset_neumorphic">أزرق نيومورفي</string>
+    <string name="theme_appearance">المظهر</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
     <string name="theme_builder">منشئ الثيم المخصّص</string>
     <string name="primary_color">اللون الأساسي</string>
     <string name="secondary_color">اللون الثانوي</string>

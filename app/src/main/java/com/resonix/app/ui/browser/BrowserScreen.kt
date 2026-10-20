@@ -46,6 +46,8 @@ import com.resonix.app.R
 import com.resonix.app.download.DownloadService
 import com.resonix.app.download.DownloadStatus
 import com.resonix.app.download.DownloadTracker
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.themeCardShape
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -56,6 +58,7 @@ class DownloadViewModel @Inject constructor(val tracker: DownloadTracker) : View
 fun BrowserScreen(modifier: Modifier = Modifier, dvm: DownloadViewModel = hiltViewModel()) {
     val ctx = LocalContext.current
     val downloads by dvm.tracker.items.collectAsStateWithLifecycle()
+    val preset = LocalThemePreset.current
     val defaultName = stringResource(R.string.dl_default_name)
     var input by remember { mutableStateOf("https://archive.org") }
     var currentUrl by remember { mutableStateOf("https://archive.org") }
@@ -75,6 +78,7 @@ fun BrowserScreen(modifier: Modifier = Modifier, dvm: DownloadViewModel = hiltVi
             label = { Text(stringResource(R.string.browser_address)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
             keyboardActions = KeyboardActions(onGo = { web?.loadUrl(normalizeUrl(input)) }),
+            shape = themeCardShape(preset),
             modifier = Modifier.fillMaxWidth().padding(12.dp),
         )
 

@@ -1,6 +1,7 @@
 package com.resonix.app.ui.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -56,6 +58,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.resonix.app.R
 import com.resonix.app.ui.PlayerViewModel
+import com.resonix.app.ui.home.TrackArt
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.ThemePreset
+import com.resonix.app.ui.theme.themeCardShape
+import com.resonix.app.ui.theme.themeUsesNeumorphism
+import com.resonix.app.ui.theme.themeUsesOutline
 import java.util.Locale
 
 @Composable
@@ -66,6 +74,7 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
     val tracks by vm.tracks.collectAsStateWithLifecycle()
     val current = tracks.firstOrNull { it.id.toString() == ui.mediaId }
     val snack = remember { SnackbarHostState() }
+    val preset = LocalThemePreset.current
 
     LaunchedEffect(Unit) { vm.effects.notices.collect { snack.showSnackbar(it) } }
 
@@ -86,16 +95,20 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
                 Spacer(Modifier.size(48.dp))
             }
 
-            Box(
-                Modifier.align(Alignment.CenterHorizontally).size(180.dp).clip(RoundedCornerShape(32.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    if (fx.quranProtected) Icons.Default.MenuBook else Icons.Default.MusicNote, null,
-                    Modifier.size(84.dp), tint = MaterialTheme.colorScheme.primary,
-                )
+            val artCorner = when (preset) {
+                ThemePreset.VIOLET_CURRENT, ThemePreset.NEUMORPHIC_BLUE -> 999.dp
+                ThemePreset.OUTLINE_MONO -> 12.dp
+                ThemePreset.PETAL_PLAYER -> 40.dp
+                else -> 30.dp
             }
+            val artShape = if (artCorner == 999.dp) CircleShape else RoundedCornerShape(artCorner)
+            TrackArt(
+                current,
+                280.dp,
+                Modifier.align(Alignment.CenterHorizontally)
+                    .shadow(if (themeUsesNeumorphism(preset)) 10.dp else 0.dp, artShape),
+                corner = artCorner,
+            )
 
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(ui.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
@@ -162,9 +175,17 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
             )
 
             Card(
-                Modifier.fillMaxWidth().clickable(enabled = fx.quranProtected) { vm.effects.notifyBlocked() },
+                Modifier.fillMaxWidth()
+                    .then(
+                        if (themeUsesOutline(preset)) {
+                            Modifier.border(1.dp, MaterialTheme.colorScheme.outline, themeCardShape(preset))
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .clickable(enabled = fx.quranProtected) { vm.effects.notifyBlocked() },
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                shape = RoundedCornerShape(20.dp),
+                shape = themeCardShape(preset),
             ) {
                 val q = fx.quranProtected
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -214,10 +235,17 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit) {
 
 @Composable
 private fun SettingRow(title: String, subtitle: String, checked: Boolean, onChecked: (Boolean) -> Unit, enabled: Boolean = true) {
+    val preset = LocalThemePreset.current
+    val shape = themeCardShape(preset)
     Card(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth()
+            .then(
+                if (themeUsesOutline(preset)) Modifier.border(1.dp, MaterialTheme.colorScheme.outline, shape)
+                else Modifier
+            )
+            .then(if (themeUsesNeumorphism(preset)) Modifier.shadow(5.dp, shape) else Modifier),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        shape = RoundedCornerShape(20.dp),
+        shape = shape,
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {

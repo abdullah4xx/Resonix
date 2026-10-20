@@ -1,5 +1,7 @@
 package com.resonix.app.ui.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,6 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.resonix.app.R
 import com.resonix.app.data.TrackEntity
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.themeCardShape
+import com.resonix.app.ui.theme.themeUsesNeumorphism
+import com.resonix.app.ui.theme.themeUsesOutline
 
 class TrackActions(
     val play: (List<TrackEntity>, Int) -> Unit,
@@ -45,8 +53,20 @@ class TrackActions(
 @Composable
 fun TrackRow(track: TrackEntity, onClick: () -> Unit, actions: TrackActions) {
     var menu by remember { mutableStateOf(false) }
+    val preset = LocalThemePreset.current
+    val shape = themeCardShape(preset)
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 8.dp),
+        Modifier.fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .shadow(if (themeUsesNeumorphism(preset)) 5.dp else 0.dp, shape)
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface)
+            .then(
+                if (themeUsesOutline(preset)) Modifier.border(1.dp, MaterialTheme.colorScheme.outline, shape)
+                else Modifier
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TrackArt(track, 52.dp)

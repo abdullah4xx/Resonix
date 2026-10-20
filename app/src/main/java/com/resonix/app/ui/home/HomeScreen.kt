@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -62,6 +63,10 @@ import com.resonix.app.R
 import com.resonix.app.data.TrackEntity
 import com.resonix.app.ui.LanguageSwitcher
 import com.resonix.app.ui.PlayerViewModel
+import com.resonix.app.ui.theme.LocalThemePreset
+import com.resonix.app.ui.theme.themeCardShape
+import com.resonix.app.ui.theme.themeUsesNeumorphism
+import com.resonix.app.ui.theme.themeUsesOutline
 
 enum class HomeTab(@StringRes val label: Int) {
     TRACKS(R.string.tab_tracks),
@@ -79,7 +84,7 @@ enum class SortOrder(@StringRes val label: Int) {
     ARTIST(R.string.sort_artist),
 }
 
-private data class QuickItem(val filter: QuickFilter, val label: String, val icon: ImageVector, val color: Color)
+private data class QuickItem(val filter: QuickFilter, val label: String, val icon: ImageVector)
 
 @Composable
 fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier = Modifier) {
@@ -108,10 +113,10 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
 
     val favLabel = stringResource(R.string.quick_favorites)
     val quickItems = listOf(
-        QuickItem(QuickFilter.QURAN, stringResource(R.string.quick_quran), Icons.Default.MenuBook, Color(0xFF34D399)),
-        QuickItem(QuickFilter.FAVORITES, favLabel, Icons.Default.Favorite, Color(0xFFFF4D6D)),
-        QuickItem(QuickFilter.VIDEOS, stringResource(R.string.quick_videos), Icons.Default.VideoLibrary, Color(0xFF8B5CF6)),
-        QuickItem(QuickFilter.RECENT, stringResource(R.string.quick_recent), Icons.Default.History, Color(0xFFFF9F1C)),
+        QuickItem(QuickFilter.QURAN, stringResource(R.string.quick_quran), Icons.Default.MenuBook),
+        QuickItem(QuickFilter.FAVORITES, favLabel, Icons.Default.Favorite),
+        QuickItem(QuickFilter.VIDEOS, stringResource(R.string.quick_videos), Icons.Default.VideoLibrary),
+        QuickItem(QuickFilter.RECENT, stringResource(R.string.quick_recent), Icons.Default.History),
     )
     val quranName = stringResource(R.string.playlist_quran)
     val musicName = stringResource(R.string.playlist_music)
@@ -157,13 +162,19 @@ fun HomeScreen(vm: PlayerViewModel, onOpenSearch: () -> Unit, modifier: Modifier
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 6.dp, bottom = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val shuffleColor = MaterialTheme.colorScheme.primary
                 Box(
                     Modifier.size(width = 44.dp, height = 32.dp).clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFFE53935))
+                        .background(shuffleColor)
                         .clickable(enabled = sorted.isNotEmpty()) { vm.shuffleAll(sorted) },
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(Icons.Default.Shuffle, stringResource(R.string.shuffle), Modifier.size(20.dp), tint = Color.White)
+                    Icon(
+                        Icons.Default.Shuffle,
+                        stringResource(R.string.shuffle),
+                        Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(stringResource(R.string.shuffle), fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -264,21 +275,35 @@ private fun TabLabel(text: String, selected: Boolean, onClick: () -> Unit) {
 
 @Composable
 private fun QuickCard(item: QuickItem, selected: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(20.dp)
+    val preset = LocalThemePreset.current
+    val shape = themeCardShape(preset)
+    val accent = if (item.filter == QuickFilter.FAVORITES || item.filter == QuickFilter.RECENT) {
+        MaterialTheme.colorScheme.secondary
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
     Column(
-        Modifier.width(84.dp).clip(shape)
+        Modifier.width(84.dp)
+            .shadow(if (themeUsesNeumorphism(preset)) 5.dp else 0.dp, shape)
+            .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .then(if (selected) Modifier.border(1.5.dp, item.color, shape) else Modifier)
+            .then(
+                when {
+                    selected -> Modifier.border(1.5.dp, accent, shape)
+                    themeUsesOutline(preset) -> Modifier.border(1.dp, MaterialTheme.colorScheme.outline, shape)
+                    else -> Modifier
+                }
+            )
             .clickable(onClick = onClick)
             .padding(vertical = 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
-            Modifier.size(40.dp).clip(RoundedCornerShape(14.dp)).background(item.color.copy(alpha = 0.22f)),
+            Modifier.size(40.dp).clip(RoundedCornerShape(14.dp)).background(accent.copy(alpha = 0.22f)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(item.icon, null, Modifier.size(22.dp), tint = item.color)
+            Icon(item.icon, null, Modifier.size(22.dp), tint = accent)
         }
         Text(item.label, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
